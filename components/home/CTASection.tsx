@@ -26,7 +26,7 @@ export default function CTASection() {
             للطبيبات فقط
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-relaxed">
-            أنت طبيبة نساء وتوليد؟
+           ؟ أنت طبيبة  
             <br />
             <span className="text-pink-200">انضمي لدليلنا اليوم</span>
           </h2>

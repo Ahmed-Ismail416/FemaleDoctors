@@ -27,7 +27,7 @@ export default function HeroSearch({ governorates }: HeroSearchProps) {
   return (
     <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-2xl w-full mx-auto border border-white/50">
       <p className="text-center text-gray-600 text-sm mb-4 font-medium">
-        ابحثي عن طبيبة أمراض نساء وتوليد
+        ابحثي عن طبيبة أمراض نساء 
       </p>
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">

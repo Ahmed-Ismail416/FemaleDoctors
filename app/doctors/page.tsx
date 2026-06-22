@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
-import { Users } from "lucide-react";
+import Link from "next/link";
+import { Users, ChevronRight, ChevronLeft } from "lucide-react";
 import DoctorCard from "@/components/doctors/DoctorCard";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
@@ -47,7 +48,15 @@ export default async function DoctorsPage({
   if (params.city) where.city_id = parseInt(params.city);
   if (params.specialty) where.specialty = params.specialty;
 
-  const [governorates, cities, filtered] = await Promise.all([
+  // Pagination calculations
+  const currentPage = (() => {
+    const parsed = parseInt(params.page || "1");
+    return isNaN(parsed) || parsed < 1 ? 1 : parsed;
+  })();
+  const PAGE_SIZE = 12;
+  const skip = (currentPage - 1) * PAGE_SIZE;
+
+  const [governorates, cities, filtered, totalCount] = await Promise.all([
     prisma.governorate.findMany({ orderBy: { name_ar: "asc" } }),
     prisma.city.findMany({ orderBy: { name_ar: "asc" } }),
     prisma.doctor.findMany({
@@ -57,11 +66,43 @@ export default async function DoctorsPage({
         city: { select: { id: true, name_ar: true, name_en: true, slug: true } },
       },
       orderBy: [{ featured: "desc" }, { created_at: "desc" }],
+      take: PAGE_SIZE,
+      skip,
     }),
+    prisma.doctor.count({ where }),
   ]);
 
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const hasFilters =
     params.search || params.governorate || params.city || params.specialty;
+
+  // Helper to build links preserving existing filters
+  const buildPageLink = (pageNum: number) => {
+    const query = new URLSearchParams();
+    if (params.search) query.set("search", params.search);
+    if (params.governorate) query.set("governorate", params.governorate);
+    if (params.city) query.set("city", params.city);
+    if (params.specialty) query.set("specialty", params.specialty);
+    query.set("page", pageNum.toString());
+    return `/doctors?${query.toString()}`;
+  };
+
+  // Helper to get array of page numbers to display
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisible = 5;
+    let start = Math.max(1, currentPage - 2);
+    let end = Math.min(totalPages, start + maxVisible - 1);
+
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -78,7 +119,7 @@ export default async function DoctorsPage({
             طبيبات أمراض النساء والتوليد
           </h1>
           <p className="text-purple-200 text-lg">
-            {filtered.length} طبيبة في مصر
+            {totalCount} طبيبة في مصر
           </p>
         </div>
       </div>
@@ -103,7 +144,7 @@ export default async function DoctorsPage({
                 <>
                   عرض{" "}
                   <span className="font-bold text-purple-700">
-                    {filtered.length}
+                    {totalCount}
                   </span>{" "}
                   نتيجة
                 </>
@@ -111,7 +152,7 @@ export default async function DoctorsPage({
                 <>
                   إجمالي{" "}
                   <span className="font-bold text-purple-700">
-                    {filtered.length}
+                    {totalCount}
                   </span>{" "}
                   طبيبة
                 </>
@@ -136,6 +177,64 @@ export default async function DoctorsPage({
               لا توجد نتائج
             </h3>
             <p className="text-gray-500">جرّبي تعديل معايير البحث</p>
+          </div>
+        )}
+
+        {/* Pagination Controls */}
+        {filtered.length > 0 && totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-12" dir="rtl">
+            {/* Previous Page Button */}
+            <Link
+              href={currentPage > 1 ? buildPageLink(currentPage - 1) : "#"}
+              className={`inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-semibold border transition-all duration-200 ${
+                currentPage > 1
+                  ? "bg-white text-purple-700 border-purple-100 hover:bg-purple-50 hover:border-purple-200 active:scale-95"
+                  : "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed pointer-events-none"
+              }`}
+              aria-disabled={currentPage <= 1}
+            >
+              <ChevronRight className="w-4 h-4" />
+              السابق
+            </Link>
+
+            {/* Page Numbers */}
+            <div className="hidden sm:flex items-center gap-1.5">
+              {getPageNumbers().map((pageNum) => {
+                const isCurrent = pageNum === currentPage;
+                return (
+                  <Link
+                    key={pageNum}
+                    href={buildPageLink(pageNum)}
+                    className={`w-10 h-10 inline-flex items-center justify-center rounded-xl text-sm font-bold transition-all duration-200 ${
+                      isCurrent
+                        ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md shadow-purple-200"
+                        : "bg-white text-gray-700 border border-gray-150 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-700"
+                    }`}
+                  >
+                    {pageNum}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Mobile Current Page Indicator */}
+            <span className="sm:hidden text-sm text-gray-600 font-medium">
+              صفحة {currentPage} من {totalPages}
+            </span>
+
+            {/* Next Page Button */}
+            <Link
+              href={currentPage < totalPages ? buildPageLink(currentPage + 1) : "#"}
+              className={`inline-flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-semibold border transition-all duration-200 ${
+                currentPage < totalPages
+                  ? "bg-white text-purple-700 border-purple-100 hover:bg-purple-50 hover:border-purple-200 active:scale-95"
+                  : "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed pointer-events-none"
+              }`}
+              aria-disabled={currentPage >= totalPages}
+            >
+              التالي
+              <ChevronLeft className="w-4 h-4" />
+            </Link>
           </div>
         )}
       </div>

@@ -12,37 +12,27 @@ npm install
 
 ### 2. إعداد متغيرات البيئة
 
-افتح ملف `.env.local` وأضف بياناتك من لوحة تحكم Supabase:
+افتح ملف `.env.local` وأضف بيانات الاتصال بقاعدة بيانات Neon PostgreSQL والمشرف:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://ntzzhbnddhmxrvajhcwc.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...  # من: Project Settings > API
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...     # من: Project Settings > API (service_role)
+DATABASE_URL="postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require"
+DIRECT_URL="postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require"
+
+ADMIN_EMAIL="admin@admin.com"
+ADMIN_PASSWORD="admin123"
+SESSION_SECRET="your-32-character-random-session-secret"
 ```
 
-> ⚠️ **تحذير**: لا تشارك `SUPABASE_SERVICE_ROLE_KEY` أبداً في الكود العام.
+### 3. إعداد قاعدة البيانات وتوليد الجداول
 
-### 3. إعداد قاعدة البيانات في Supabase
+لتزامن وتوليد الجداول وتغذية البيانات محلياً:
 
-1. افتح [Supabase Dashboard](https://supabase.com/dashboard)
-2. اختر مشروعك
-3. اذهب إلى **SQL Editor**
-4. انسخ محتوى ملف `supabase/schema.sql` والصقه وشغّله
+```bash
+npx prisma db push
+npm run db:seed
+```
 
-### 4. إعداد Storage في Supabase
-
-في **Storage** بـ Supabase Dashboard، أنشئ bucket جديد:
-- `doctor-images` (Public)
-- `license-docs` (Private)
-
-### 5. إنشاء حساب المشرف
-
-في **Authentication** بـ Supabase:
-1. اضغط **Add User**
-2. أدخل البريد الإلكتروني وكلمة المرور للمشرف
-3. استخدم هذه البيانات لتسجيل الدخول على `/admin/login`
-
-### 6. تشغيل المشروع
+### 4. تشغيل المشروع
 
 ```bash
 npm run dev
@@ -86,13 +76,16 @@ components/
   ui/               # shadcn components
 
 lib/
-  supabase/         # Supabase clients
+  auth/
+    session.ts      # iron-session authentication
+  prisma.ts         # Singleton Prisma client
   types/index.ts    # TypeScript types
   data/mock.ts      # Mock data
   utils.ts
 
-supabase/
-  schema.sql        # Database schema
+prisma/
+  schema.prisma     # Prisma database schema
+  seed.ts           # Database seeding script
 ```
 
 ---
@@ -111,10 +104,10 @@ supabase/
 
 ## 🗄️ جداول قاعدة البيانات
 
-- **governorates** - المحافظات
-- **cities** - المدن والأحياء
-- **doctors** - الطبيبات الموثوقات
-- **applications** - طلبات التسجيل
+- **Governorate** - المحافظات
+- **City** - المدن والأحياء
+- **Doctor** - الطبيبات الموثوقات
+- **Application** - طلبات التسجيل
 
 ---
 
@@ -122,11 +115,8 @@ supabase/
 
 - الطبيبات العامة: قراءة الطبيبات الموثوقات فقط
 - الطلبات: أي شخص يمكنه تقديم طلب
-- لوحة الإدارة: محمية بـ Supabase Auth
-- الملفات الحساسة: محفوظة في bucket خاص
+- لوحة الإدارة: محمية بـ iron-session (جلسات آمنة للمشرفين)
 
 ---
 
-## 📞 الدعم
 
-للاستفسارات: info@femaldoctors.eg

@@ -31,7 +31,7 @@ export default function CTASection() {
             <span className="text-pink-200">انضمي لدليلنا اليوم</span>
           </h2>
           <p className="text-purple-100 text-lg mb-8 max-w-xl mx-auto leading-relaxed">
-            سجّلي بياناتك وانضمي لأكبر دليل لطبيبات أمراض النساء في مصر.
+            سجّلي بياناتك وانضمي لأكبر دليل لطبيبات مصر في مختلف التخصصات الطبية.
             وصولك لمريضاتك أصبح أسهل من أي وقت مضى.
           </p>
 

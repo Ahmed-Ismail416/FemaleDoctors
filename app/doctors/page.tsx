@@ -15,9 +15,9 @@ const DoctorFiltersAsync = dynamic(
 );
 
 export const metadata: Metadata = {
-  title: "دليل الطبيبات - أمراض النساء والتوليد في مصر",
+  title: "دليل الطبيبات في مصر",
   description:
-    "تصفح دليل طبيبات أمراض النساء والتوليد في مصر. ابحثي بالاسم أو المحافظة أو المنطقة. معلومات التواصل وعناوين العيادات.",
+    "تصفح دليل الطبيبات في مختلف التخصصات الطبية في مصر. ابحثي بالاسم أو المحافظة أو المنطقة. معلومات التواصل وعناوين العيادات.",
 };
 
 interface SearchParams {
@@ -116,7 +116,7 @@ export default async function DoctorsPage({
             <span className="text-purple-200 font-medium">دليل الطبيبات</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            طبيبات أمراض النساء والتوليد
+            دليل طبيبات مصر
           </h1>
           <p className="text-purple-200 text-lg">
             {totalCount} طبيبة في مصر

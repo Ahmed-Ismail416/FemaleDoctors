@@ -9,9 +9,9 @@ import DoctorCard from "@/components/doctors/DoctorCard";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "دليل دكتورات النساء والتوليد في مصر - الرئيسية",
+  title: "دليل طبيبات مصر | في مختلف التخصصات الطبية - الرئيسية",
   description:
-    "ابحثي عن أفضل طبيبات أمراض النساء والتوليد في مصر. دليل موثوق يضم مئات الطبيبات المتخصصات في جميع المحافظات المصرية.",
+    "ابحثي عن أفضل الطبيبات في مختلف التخصصات الطبية في مصر. دليل موثوق يضم مئات الطبيبات المتخصصات في جميع المحافظات المصرية.",
 };
 
 export default async function HomePage() {
@@ -68,14 +68,14 @@ export default async function HomePage() {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 animate-fade-in">
               دليل{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-pink-100">
-                دكتورات النساء
+                طبيبات مصر
               </span>
               <br />
-              والتوليد في مصر
+              في مختلف التخصصات
             </h1>
 
             <p className="text-lg md:text-xl text-purple-100 max-w-2xl leading-relaxed mb-10 animate-fade-in">
-              ابحثي عن أفضل طبيبات أمراض النساء والتوليد القريبات منك في مصر.
+              ابحثي عن أفضل الطبيبات في مختلف التخصصات الطبية القريبات منك في مصر.
               <br className="hidden md:block" />
               آلاف الطبيبات الموثوقات في كل المحافظات.
             </p>
@@ -129,7 +129,7 @@ export default async function HomePage() {
                 <span className="text-purple-600 font-semibold text-sm">طبيبات مميزات</span>
               </div>
               <h2 className="text-3xl font-bold text-gray-900">الطبيبات المميزات</h2>
-              <p className="text-gray-500 mt-1">أبرز طبيبات أمراض النساء والتوليد في مصر</p>
+              <p className="text-gray-500 mt-1">أبرز الطبيبات في مختلف التخصصات الطبية في مصر</p>
             </div>
             <Button variant="outline" asChild className="hidden sm:flex">
               <Link href="/doctors">

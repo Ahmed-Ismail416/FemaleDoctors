@@ -141,7 +141,7 @@ export default function RegisterPage() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-3">تم إرسال طلبك بنجاح!</h2>
           <p className="text-gray-600 mb-2 leading-relaxed">
-            شكراً لتسجيلك في دليل دكتورات النساء والتوليد في مصر.
+            شكراً لتسجيلك في دليل طبيبات مصر.
           </p>
           <p className="text-gray-500 text-sm mb-6">
             سيتم مراجعة طلبك من قبل فريقنا خلال <strong>24-48 ساعة</strong> ثم سيتم نشره في الدليل.
@@ -175,7 +175,7 @@ export default function RegisterPage() {
             انضمي لدليل الطبيبات
           </h1>
           <p className="text-gray-600 max-w-xl mx-auto">
-            سجّلي بياناتك للظهور في أكبر دليل لطبيبات أمراض النساء والتوليد في مصر
+            سجّلي بياناتك للظهور في أكبر دليل لطبيبات مصر في مختلف التخصصات الطبية
           </p>
         </div>
 
@@ -458,7 +458,7 @@ export default function RegisterPage() {
                 {confirmed && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
               </div>
               <span className="text-sm text-gray-700 leading-relaxed">
-                أؤكد أنني طبيبة أنثى متخصصة في أمراض النساء والتوليد، وأتحمل مسؤولية صحة البيانات المُدخلة.
+                أؤكد أنني طبيبة أنثى، وأتحمل مسؤولية صحة البيانات المُدخلة.
                 أوافق على مراجعة طلبي قبل النشر وعلى{" "}
                 <a href="#" className="text-purple-600 hover:underline">سياسة الخصوصية</a>{" "}
                 و<a href="#" className="text-purple-600 hover:underline">شروط الاستخدام</a>.

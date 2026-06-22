@@ -14,11 +14,11 @@ export default function Footer() {
               </div>
               <div>
                 <p className="text-lg font-bold text-white">دليل طبيبات</p>
-                <p className="text-sm text-pink-300">النساء  في مصر</p>
+                <p className="text-sm text-pink-300">مصر</p>
               </div>
             </Link>
             <p className="text-purple-200 text-sm leading-relaxed max-w-xs">
-              منصة متخصصة في توجيه السيدات للعثور على أفضل طبيبات أمراض النساء في جميع محافظات مصر.
+              منصة متخصصة في توجيه السيدات للعثور على أفضل الطبيبات في مختلف التخصصات الطبية في جميع محافظات مصر.
               نؤمن بحق المرأة في الرعاية الصحية على يد طبيبة متخصصة.
             </p>
             <div className="flex items-center gap-3 mt-6">
@@ -76,7 +76,7 @@ export default function Footer() {
 
         <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-purple-300 text-sm text-center">
-            © {new Date().getFullYear()} دليل طبيبات النساء والتوليد في مصر. جميع الحقوق محفوظة.
+            © {new Date().getFullYear()} دليل طبيبات مصر. جميع الحقوق محفوظة.
           </p>
           <p className="text-purple-400 text-xs">
             صُنع بـ <Heart className="inline w-3 h-3 fill-pink-400 text-pink-400" /> لصحة المرأة المصرية

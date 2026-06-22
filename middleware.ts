@@ -1,53 +1,45 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { unsealData } from "iron-session";
+import { sessionOptions, SessionData } from "@/lib/auth/session";
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
+  const isAdminPath = request.nextUrl.pathname.startsWith("/admin");
+  const isLoginPath = request.nextUrl.pathname.startsWith("/admin/login");
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
+  if (!isAdminPath) {
+    return NextResponse.next();
+  }
+
+  // Get the session cookie
+  const sessionCookie = request.cookies.get(sessionOptions.cookieName)?.value;
+  let isAuthenticated = false;
+
+  if (sessionCookie) {
+    try {
+      const session = await unsealData<SessionData>(sessionCookie, {
+        password: sessionOptions.password,
+      });
+      isAuthenticated = session.isAdmin === true;
+    } catch (error) {
+      console.error("Session unseal error:", error);
     }
-  );
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  }
 
   // Protect /admin routes (except /admin/login)
-  if (
-    request.nextUrl.pathname.startsWith("/admin") &&
-    !request.nextUrl.pathname.startsWith("/admin/login") &&
-    !user
-  ) {
+  if (!isLoginPath && !isAuthenticated) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     return NextResponse.redirect(url);
   }
 
   // Redirect logged-in admin away from login page
-  if (request.nextUrl.pathname.startsWith("/admin/login") && user) {
+  if (isLoginPath && isAuthenticated) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     return NextResponse.redirect(url);
   }
 
-  return supabaseResponse;
+  return NextResponse.next();
 }
 
 export const config = {

@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
   { href: "/admin", label: "لوحة التحكم", icon: LayoutDashboard, exact: true },
@@ -22,7 +21,6 @@ const navItems = [
 export default function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const supabase = createClient();
   const [collapsed, setCollapsed] = useState(false);
 
   const isActive = (item: typeof navItems[0]) => {
@@ -31,7 +29,7 @@ export default function AdminSidebar() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await fetch("/api/auth/logout", { method: "POST" });
     router.push("/admin/login");
     router.refresh();
   };

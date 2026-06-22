@@ -6,10 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { City, Governorate } from "@/lib/types";
-import { createClient } from "@/lib/supabase/client";
 
 export default function AdminCitiesPage() {
-  const supabase = createClient();
   const [cities, setCities] = useState<City[]>([]);
   const [governorates, setGovernorates] = useState<Governorate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,14 +18,18 @@ export default function AdminCitiesPage() {
 
   useEffect(() => {
     async function loadData() {
-      const { data: govs } = await supabase.from("governorates").select("*").order("name_ar");
-      const { data: cits } = await supabase.from("cities").select("*").order("name_ar");
-      if (govs) setGovernorates(govs);
-      if (cits) setCities(cits);
+      const [govRes, cityRes] = await Promise.all([
+        fetch("/api/governorates"),
+        fetch("/api/cities"),
+      ]);
+      const govs = await govRes.json();
+      const cits = await cityRes.json();
+      setGovernorates(govs);
+      setCities(cits);
       setLoading(false);
     }
     loadData();
-  }, [supabase]);
+  }, []);
 
   const filtered = filterGov
     ? cities.filter((c) => c.governorate_id === parseInt(filterGov))
@@ -35,37 +37,29 @@ export default function AdminCitiesPage() {
 
   const handleAdd = async () => {
     if (!newName.trim() || !newGov) return;
-
-    const newCity = {
-      governorate_id: parseInt(newGov),
-      name_ar: newName,
-      name_en: newName,
-      slug: newName.replace(/\s+/g, "-"),
-    };
-
-    const { data, error } = await supabase
-      .from("cities")
-      .insert([newCity])
-      .select()
-      .single();
-
-    if (!error && data) {
+    const res = await fetch("/api/cities", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name_ar: newName, governorate_id: parseInt(newGov) }),
+    });
+    if (res.ok) {
+      const data = await res.json();
       setCities((prev) => [...prev, data]);
       setNewName("");
       setNewGov("");
       setShowAdd(false);
-    } else if (error) {
-      alert("Error adding city: " + error.message);
+    } else {
+      alert("Error adding city");
     }
   };
 
   const handleDelete = async (id: number) => {
     if (confirm("هل أنت متأكد من حذف هذه المدينة؟")) {
-      const { error } = await supabase.from("cities").delete().eq("id", id);
-      if (!error) {
+      const res = await fetch(`/api/cities?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
         setCities((prev) => prev.filter((c) => c.id !== id));
       } else {
-        alert("Error deleting city: " + error.message);
+        alert("Error deleting city");
       }
     }
   };

@@ -11,13 +11,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { SPECIALTIES, Governorate, City } from "@/lib/types";
-import { createClient } from "@/lib/supabase/client";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const supabase = createClient();
   const [status, setStatus] = useState<FormStatus>("idle");
   const [selectedGovernorate, setSelectedGovernorate] = useState("");
   const [confirmed, setConfirmed] = useState(false);
@@ -41,10 +39,14 @@ export default function RegisterPage() {
 
   useEffect(() => {
     async function loadLocations() {
-      const { data: govs } = await supabase.from("governorates").select("*").order("name_ar");
-      const { data: cits } = await supabase.from("cities").select("*").order("name_ar");
-      if (govs) setGovernorates(govs);
-      if (cits) setCities(cits);
+      const [govRes, cityRes] = await Promise.all([
+        fetch("/api/governorates"),
+        fetch("/api/cities"),
+      ]);
+      const govs = await govRes.json();
+      const cits = await cityRes.json();
+      setGovernorates(govs);
+      setCities(cits);
     }
     loadLocations();
   }, []);
@@ -57,24 +59,15 @@ export default function RegisterPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const uploadFile = async (file: File, bucket: string) => {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-    const filePath = `${fileName}`;
+  const uploadFile = async (file: File, bucket: string): Promise<string> => {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("bucket", bucket);
 
-    const { error } = await supabase.storage
-      .from(bucket)
-      .upload(filePath, file);
-
-    if (error) {
-      throw error;
-    }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from(bucket)
-      .getPublicUrl(filePath);
-
-    return publicUrl;
+    const res = await fetch("/api/upload", { method: "POST", body: form });
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
+    return json.url as string;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -84,11 +77,11 @@ export default function RegisterPage() {
       return;
     }
     setStatus("loading");
-    
+
     try {
       let image_url = "";
       let license_url = "";
-      
+
       if (imageFile) {
         try {
           image_url = await uploadFile(imageFile, "doctor-images");
@@ -96,7 +89,7 @@ export default function RegisterPage() {
           console.error("Image upload error:", err);
         }
       }
-      
+
       if (licenseFile) {
         try {
           license_url = await uploadFile(licenseFile, "license-docs");

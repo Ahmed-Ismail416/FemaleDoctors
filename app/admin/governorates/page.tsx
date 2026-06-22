@@ -5,10 +5,8 @@ import { Plus, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Governorate } from "@/lib/types";
-import { createClient } from "@/lib/supabase/client";
 
 export default function AdminGovernoratesPage() {
-  const supabase = createClient();
   const [governorates, setGovernorates] = useState<Governorate[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -16,46 +14,38 @@ export default function AdminGovernoratesPage() {
 
   useEffect(() => {
     async function loadGovernorates() {
-      const { data } = await supabase.from("governorates").select("*").order("name_ar");
-      if (data) {
-        setGovernorates(data);
-      }
+      const res = await fetch("/api/governorates");
+      const data = await res.json();
+      setGovernorates(data);
       setLoading(false);
     }
     loadGovernorates();
-  }, [supabase]);
+  }, []);
 
   const handleAdd = async () => {
     if (!newName.trim()) return;
-    
-    const newGov = {
-      name_ar: newName,
-      name_en: newName,
-      slug: newName.replace(/\s+/g, "-"),
-    };
-
-    const { data, error } = await supabase
-      .from("governorates")
-      .insert([newGov])
-      .select()
-      .single();
-
-    if (!error && data) {
+    const res = await fetch("/api/governorates", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name_ar: newName }),
+    });
+    if (res.ok) {
+      const data = await res.json();
       setGovernorates((prev) => [...prev, data]);
       setNewName("");
       setShowAdd(false);
-    } else if (error) {
-      alert("Error adding governorate: " + error.message);
+    } else {
+      alert("Error adding governorate");
     }
   };
 
   const handleDelete = async (id: number) => {
     if (confirm("هل أنت متأكد من حذف هذه المحافظة؟")) {
-      const { error } = await supabase.from("governorates").delete().eq("id", id);
-      if (!error) {
+      const res = await fetch(`/api/governorates?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
         setGovernorates((prev) => prev.filter((g) => g.id !== id));
       } else {
-        alert("Error deleting governorate: " + error.message);
+        alert("Error deleting governorate");
       }
     }
   };

@@ -2,26 +2,33 @@ import {
   Users, CheckCircle2, Clock, XCircle, Building2, MapPin, Star, ClipboardList, Heart
 } from "lucide-react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 
 export default async function AdminDashboardPage() {
-  const supabase = await createClient();
-
-  const { count: totalDoctors } = await supabase.from("doctors").select("*", { count: "exact", head: true });
-  const { count: verifiedDoctors } = await supabase.from("doctors").select("*", { count: "exact", head: true }).eq("verified", true);
-  const { count: featuredDoctors } = await supabase.from("doctors").select("*", { count: "exact", head: true }).eq("featured", true);
-  
-  const { count: pendingApps } = await supabase.from("applications").select("*", { count: "exact", head: true }).eq("status", "pending");
-  const { count: approvedApps } = await supabase.from("applications").select("*", { count: "exact", head: true }).eq("status", "approved");
-  const { count: rejectedApps } = await supabase.from("applications").select("*", { count: "exact", head: true }).eq("status", "rejected");
-
-  const { count: totalGovernorates } = await supabase.from("governorates").select("*", { count: "exact", head: true });
-  const { count: totalCities } = await supabase.from("cities").select("*", { count: "exact", head: true });
+  const [
+    totalDoctors,
+    verifiedDoctors,
+    featuredDoctors,
+    pendingApps,
+    approvedApps,
+    rejectedApps,
+    totalGovernorates,
+    totalCities,
+  ] = await Promise.all([
+    prisma.doctor.count(),
+    prisma.doctor.count({ where: { verified: true } }),
+    prisma.doctor.count({ where: { featured: true } }),
+    prisma.application.count({ where: { status: "pending" } }),
+    prisma.application.count({ where: { status: "approved" } }),
+    prisma.application.count({ where: { status: "rejected" } }),
+    prisma.governorate.count(),
+    prisma.city.count(),
+  ]);
 
   const stats = [
     {
       label: "إجمالي الطبيبات",
-      value: totalDoctors || 0,
+      value: totalDoctors,
       icon: <Users className="w-6 h-6" />,
       color: "text-purple-600",
       bg: "bg-purple-50",
@@ -29,7 +36,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: "الطبيبات الموثوقات",
-      value: verifiedDoctors || 0,
+      value: verifiedDoctors,
       icon: <CheckCircle2 className="w-6 h-6" />,
       color: "text-green-600",
       bg: "bg-green-50",
@@ -37,7 +44,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: "طلبات معلقة",
-      value: pendingApps || 0,
+      value: pendingApps,
       icon: <Clock className="w-6 h-6" />,
       color: "text-orange-600",
       bg: "bg-orange-50",
@@ -45,7 +52,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: "طلبات مقبولة",
-      value: approvedApps || 0,
+      value: approvedApps,
       icon: <CheckCircle2 className="w-6 h-6" />,
       color: "text-blue-600",
       bg: "bg-blue-50",
@@ -53,7 +60,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: "طلبات مرفوضة",
-      value: rejectedApps || 0,
+      value: rejectedApps,
       icon: <XCircle className="w-6 h-6" />,
       color: "text-red-600",
       bg: "bg-red-50",
@@ -61,7 +68,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: "طبيبات مميزات",
-      value: featuredDoctors || 0,
+      value: featuredDoctors,
       icon: <Star className="w-6 h-6" />,
       color: "text-yellow-600",
       bg: "bg-yellow-50",
@@ -69,7 +76,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: "المحافظات",
-      value: totalGovernorates || 0,
+      value: totalGovernorates,
       icon: <MapPin className="w-6 h-6" />,
       color: "text-indigo-600",
       bg: "bg-indigo-50",
@@ -77,7 +84,7 @@ export default async function AdminDashboardPage() {
     },
     {
       label: "المدن والأحياء",
-      value: totalCities || 0,
+      value: totalCities,
       icon: <Building2 className="w-6 h-6" />,
       color: "text-pink-600",
       bg: "bg-pink-50",
@@ -118,7 +125,7 @@ export default async function AdminDashboardPage() {
             الطلبات المعلقة
           </h2>
           <p className="text-gray-500 text-sm mb-4">
-            يوجد <span className="font-bold text-orange-600">{pendingApps || 0}</span> طلبات تنتظر المراجعة
+            يوجد <span className="font-bold text-orange-600">{pendingApps}</span> طلبات تنتظر المراجعة
           </p>
           <Link
             href="/admin/applications"

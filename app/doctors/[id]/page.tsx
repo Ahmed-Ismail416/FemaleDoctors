@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { buildWhatsAppLink } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -17,33 +17,27 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const supabase = await createClient();
-  const { data: doctor } = await supabase
-    .from("doctors")
-    .select("name, specialty, bio, governorate:governorates(name_ar)")
-    .eq("id", parseInt(id))
-    .single();
+  const doctor = await prisma.doctor.findUnique({
+    where: { id: parseInt(id) },
+    include: { governorate: true },
+  });
 
   if (!doctor) return { title: "طبيبة غير موجودة" };
-  const doc = doctor as any;
   return {
-    title: `${doc.name} - ${doc.specialty}`,
-    description: `${doc.name} - ${doc.specialty} في ${doc.governorate?.name_ar}. ${doc.bio?.slice(0, 150)}`,
+    title: `${doctor.name} - ${doctor.specialty}`,
+    description: `${doctor.name} - ${doctor.specialty} في ${doctor.governorate?.name_ar}. ${doctor.bio?.slice(0, 150)}`,
   };
 }
 
 export default async function DoctorProfilePage({ params }: Props) {
   const { id } = await params;
-  const supabase = await createClient();
-  const { data: doctor } = await supabase
-    .from("doctors")
-    .select(`
-      *,
-      governorate:governorates(id, name_ar, name_en, slug),
-      city:cities(id, name_ar, name_en, slug)
-    `)
-    .eq("id", parseInt(id))
-    .single();
+  const doctor = await prisma.doctor.findUnique({
+    where: { id: parseInt(id) },
+    include: {
+      governorate: { select: { id: true, name_ar: true, name_en: true, slug: true } },
+      city: { select: { id: true, name_ar: true, name_en: true, slug: true } },
+    },
+  });
 
   if (!doctor) notFound();
 

@@ -3,7 +3,8 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Users } from "lucide-react";
 import DoctorCard from "@/components/doctors/DoctorCard";
-import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 const DoctorFiltersAsync = dynamic(
   () => import("@/components/doctors/DoctorFilters"),
@@ -32,45 +33,32 @@ export default async function DoctorsPage({
   searchParams: Promise<SearchParams>;
 }) {
   const params = await searchParams;
-  const supabase = await createClient();
 
-  // 1. Fetch Governorates for filter dropdown
-  const { data: govData } = await supabase.from("governorates").select("*").order("name_ar");
-  const governorates = govData || [];
-
-  // 2. Fetch Cities for filter dropdown
-  const { data: cityData } = await supabase.from("cities").select("*").order("name_ar");
-  const cities = cityData || [];
-
-  // 3. Fetch Doctors matching filters
-  let query = supabase
-    .from("doctors")
-    .select(`
-      *,
-      governorate:governorates(id, name_ar, name_en, slug),
-      city:cities(id, name_ar, name_en, slug)
-    `)
-    .eq("verified", true);
+  const where: Prisma.DoctorWhereInput = { verified: true };
 
   if (params.search) {
-    const s = params.search;
-    query = query.or(`name.ilike.%${s}%,specialty.ilike.%${s}%,address.ilike.%${s}%`);
+    where.OR = [
+      { name: { contains: params.search, mode: "insensitive" } },
+      { specialty: { contains: params.search, mode: "insensitive" } },
+      { address: { contains: params.search, mode: "insensitive" } },
+    ];
   }
-  if (params.governorate) {
-    query = query.eq("governorate_id", parseInt(params.governorate));
-  }
-  if (params.city) {
-    query = query.eq("city_id", parseInt(params.city));
-  }
-  if (params.specialty) {
-    query = query.eq("specialty", params.specialty);
-  }
+  if (params.governorate) where.governorate_id = parseInt(params.governorate);
+  if (params.city) where.city_id = parseInt(params.city);
+  if (params.specialty) where.specialty = params.specialty;
 
-  const { data: doctorsData } = await query
-    .order("featured", { ascending: false })
-    .order("created_at", { ascending: false });
-
-  const filtered = doctorsData || [];
+  const [governorates, cities, filtered] = await Promise.all([
+    prisma.governorate.findMany({ orderBy: { name_ar: "asc" } }),
+    prisma.city.findMany({ orderBy: { name_ar: "asc" } }),
+    prisma.doctor.findMany({
+      where,
+      include: {
+        governorate: { select: { id: true, name_ar: true, name_en: true, slug: true } },
+        city: { select: { id: true, name_ar: true, name_en: true, slug: true } },
+      },
+      orderBy: [{ featured: "desc" }, { created_at: "desc" }],
+    }),
+  ]);
 
   const hasFilters =
     params.search || params.governorate || params.city || params.specialty;
@@ -154,4 +142,3 @@ export default async function DoctorsPage({
     </div>
   );
 }
-

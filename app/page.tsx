@@ -6,8 +6,7 @@ import HeroSearch from "@/components/home/HeroSearch";
 import StatsSection from "@/components/home/StatsSection";
 import CTASection from "@/components/home/CTASection";
 import DoctorCard from "@/components/doctors/DoctorCard";
-import { createClient } from "@/lib/supabase/server";
-import { seedDatabase } from "@/lib/supabase/seed";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "دليل دكتورات النساء والتوليد في مصر - الرئيسية",
@@ -16,51 +15,24 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // Self-healing seed: will seed database if it's empty
-  await seedDatabase();
+  const [featuredDoctors, governorates, totalDoctors, totalGovernorates, totalCities] =
+    await Promise.all([
+      prisma.doctor.findMany({
+        where: { verified: true, featured: true },
+        include: {
+          governorate: { select: { id: true, name_ar: true, name_en: true, slug: true } },
+          city: { select: { id: true, name_ar: true, name_en: true, slug: true } },
+        },
+        orderBy: { created_at: "desc" },
+        take: 6,
+      }),
+      prisma.governorate.findMany({ orderBy: { name_ar: "asc" } }),
+      prisma.doctor.count({ where: { verified: true } }),
+      prisma.governorate.count(),
+      prisma.city.count(),
+    ]);
 
-  const supabase = await createClient();
-
-  // Fetch featured doctors (limit 6)
-  const { data: featuredData } = await supabase
-    .from("doctors")
-    .select(`
-      *,
-      governorate:governorates(id, name_ar, name_en, slug),
-      city:cities(id, name_ar, name_en, slug)
-    `)
-    .eq("verified", true)
-    .eq("featured", true)
-    .order("created_at", { ascending: false })
-    .limit(6);
-  const featuredDoctors = featuredData || [];
-
-  // Fetch governorates
-  const { data: govData } = await supabase
-    .from("governorates")
-    .select("*")
-    .order("name_ar");
-  const governorates = govData || [];
-
-  // Fetch count stats
-  const { count: totalDoctors } = await supabase
-    .from("doctors")
-    .select("*", { count: "exact", head: true })
-    .eq("verified", true);
-
-  const { count: totalGovernorates } = await supabase
-    .from("governorates")
-    .select("*", { count: "exact", head: true });
-
-  const { count: totalCities } = await supabase
-    .from("cities")
-    .select("*", { count: "exact", head: true });
-
-  const stats = {
-    totalDoctors: totalDoctors || 0,
-    totalGovernorates: totalGovernorates || 0,
-    totalCities: totalCities || 0,
-  };
+  const stats = { totalDoctors, totalGovernorates, totalCities };
 
   return (
     <>

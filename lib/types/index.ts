@@ -1,5 +1,5 @@
 // =============================================
-// Database Types (matches Supabase schema)
+// Database Types
 // =============================================
 
 export interface Governorate {
@@ -7,7 +7,7 @@ export interface Governorate {
   name_ar: string;
   name_en: string;
   slug: string;
-  created_at: string;
+  created_at: string | Date;
 }
 
 export interface City {
@@ -16,7 +16,7 @@ export interface City {
   name_ar: string;
   name_en: string;
   slug: string;
-  created_at: string;
+  created_at: string | Date;
   governorate?: Governorate;
 }
 
@@ -35,7 +35,7 @@ export interface Doctor {
   image_url?: string;
   verified: boolean;
   featured: boolean;
-  created_at: string;
+  created_at: string | Date;
   governorate?: Governorate;
   city?: City;
 }
@@ -56,7 +56,7 @@ export interface Application {
   license_url?: string;
   status: "pending" | "approved" | "rejected";
   notes?: string;
-  created_at: string;
+  created_at: string | Date;
   governorate?: Governorate;
   city?: City;
 }

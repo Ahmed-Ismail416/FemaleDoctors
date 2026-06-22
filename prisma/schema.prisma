@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Governorate {
+  id         Int      @id @default(autoincrement())
+  name_ar    String   @db.VarChar(100)
+  name_en    String   @db.VarChar(100)
+  slug       String   @unique @db.VarChar(100)
+  created_at DateTime @default(now())
+
+  cities       City[]
+  doctors      Doctor[]
+  applications Application[]
+
+  @@map("governorates")
+}
+
+model City {
+  id             Int      @id @default(autoincrement())
+  governorate_id Int
+  name_ar        String   @db.VarChar(100)
+  name_en        String   @db.VarChar(100)
+  slug           String   @db.VarChar(100)
+  created_at     DateTime @default(now())
+
+  governorate  Governorate   @relation(fields: [governorate_id], references: [id], onDelete: Cascade)
+  doctors      Doctor[]
+  applications Application[]
+
+  @@unique([governorate_id, slug])
+  @@map("cities")
+}
+
+model Doctor {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(200)
+  phone          String   @db.VarChar(20)
+  whatsapp       String?  @db.VarChar(20)
+  email          String?  @db.VarChar(255)
+  governorate_id Int
+  city_id        Int?
+  address        String
+  specialty      String   @db.VarChar(200)
+  bio            String?
+  map_url        String?
+  image_url      String?
+  verified       Boolean  @default(false)
+  featured       Boolean  @default(false)
+  created_at     DateTime @default(now())
+
+  governorate Governorate @relation(fields: [governorate_id], references: [id])
+  city        City?       @relation(fields: [city_id], references: [id])
+
+  @@index([governorate_id])
+  @@index([city_id])
+  @@index([verified])
+  @@index([featured])
+  @@map("doctors")
+}
+
+model Application {
+  id             Int               @id @default(autoincrement())
+  doctor_name    String            @db.VarChar(200)
+  phone          String            @db.VarChar(20)
+  whatsapp       String?           @db.VarChar(20)
+  email          String?           @db.VarChar(255)
+  governorate_id Int
+  city_id        Int?
+  address        String
+  specialty      String            @db.VarChar(200)
+  bio            String?
+  map_url        String?
+  image_url      String?
+  license_url    String?
+  status         ApplicationStatus @default(pending)
+  notes          String?
+  created_at     DateTime          @default(now())
+
+  governorate Governorate @relation(fields: [governorate_id], references: [id])
+  city        City?       @relation(fields: [city_id], references: [id])
+
+  @@index([status])
+  @@map("applications")
+}
+
+enum ApplicationStatus {
+  pending
+  approved
+  rejected
+}

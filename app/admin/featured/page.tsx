@@ -6,27 +6,16 @@ import Image from "next/image";
 import { Doctor } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
 
 export default function AdminFeaturedPage() {
-  const supabase = createClient();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadDoctors() {
-      const { data } = await supabase
-        .from("doctors")
-        .select(`
-          *,
-          governorate:governorates(id, name_ar, name_en, slug),
-          city:cities(id, name_ar, name_en, slug)
-        `)
-        .eq("verified", true)
-        .order("created_at", { ascending: false });
-      if (data) {
-        setDoctors(data as any);
-      }
+      const res = await fetch("/api/doctors?pageSize=200");
+      const json = await res.json();
+      if (json.data) setDoctors(json.data as Doctor[]);
       setLoading(false);
     }
     loadDoctors();
@@ -40,17 +29,18 @@ export default function AdminFeaturedPage() {
     if (!doc) return;
     const newFeatured = !doc.featured;
 
-    const { error } = await supabase
-      .from("doctors")
-      .update({ featured: newFeatured })
-      .eq("id", id);
+    const res = await fetch("/api/doctors", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, featured: newFeatured }),
+    });
 
-    if (!error) {
+    if (res.ok) {
       setDoctors((prev) =>
         prev.map((d) => (d.id === id ? { ...d, featured: newFeatured } : d))
       );
     } else {
-      alert("Error featuring doctor: " + error.message);
+      alert("Error featuring doctor");
     }
   };
 

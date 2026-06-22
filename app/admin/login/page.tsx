@@ -5,11 +5,9 @@ import { useRouter } from "next/navigation";
 import { Heart, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createClient } from "@/lib/supabase/client";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const supabase = createClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -22,9 +20,16 @@ export default function AdminLoginPage() {
     setError("");
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        setError("بيانات الدخول غير صحيحة: " + error.message);
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || json.error) {
+        setError(json.error || "بيانات الدخول غير صحيحة");
       } else {
         router.push("/admin");
         router.refresh();

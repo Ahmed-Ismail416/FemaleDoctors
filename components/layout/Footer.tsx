@@ -1,0 +1,88 @@
+import Link from "next/link";
+import { Heart, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+
+export default function Footer() {
+  return (
+    <footer className="bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900 text-white">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div className="lg:col-span-2">
+            <Link href="/" className="flex items-center gap-3 mb-4 group">
+              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                <Heart className="w-6 h-6 text-pink-300 fill-pink-300" />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-white">دليل طبيبات</p>
+                <p className="text-sm text-pink-300">النساء  في مصر</p>
+              </div>
+            </Link>
+            <p className="text-purple-200 text-sm leading-relaxed max-w-xs">
+              منصة متخصصة في توجيه السيدات للعثور على أفضل طبيبات أمراض النساء في جميع محافظات مصر.
+              نؤمن بحق المرأة في الرعاية الصحية على يد طبيبة متخصصة.
+            </p>
+            <div className="flex items-center gap-3 mt-6">
+              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                <Instagram className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                <Twitter className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-bold text-white mb-4 text-base">روابط سريعة</h3>
+            <ul className="space-y-2">
+              {[
+                { href: "/", label: "الصفحة الرئيسية" },
+                { href: "/doctors", label: "دليل الطبيبات" },
+                { href: "/register", label: "تسجيل طبيبة جديدة" },
+                { href: "/contact", label: "تواصل معنا" },
+                { href: "/admin", label: "لوحة الإدارة" },
+              ].map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-purple-200 hover:text-pink-300 text-sm transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h3 className="font-bold text-white mb-4 text-base">تواصل معنا</h3>
+            <ul className="space-y-3">
+              <li className="flex items-center gap-2 text-purple-200 text-sm">
+                <Mail className="w-4 h-4 text-pink-300 shrink-0" />
+                <span>info@femaldoctors.eg</span>
+              </li>
+              <li className="flex items-center gap-2 text-purple-200 text-sm">
+                <Phone className="w-4 h-4 text-pink-300 shrink-0" />
+                <span>01000000000</span>
+              </li>
+              <li className="flex items-start gap-2 text-purple-200 text-sm">
+                <MapPin className="w-4 h-4 text-pink-300 shrink-0 mt-0.5" />
+                <span>القاهرة، جمهورية مصر العربية</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-purple-300 text-sm text-center">
+            © {new Date().getFullYear()} دليل طبيبات النساء والتوليد في مصر. جميع الحقوق محفوظة.
+          </p>
+          <p className="text-purple-400 text-xs">
+            صُنع بـ <Heart className="inline w-3 h-3 fill-pink-400 text-pink-400" /> لصحة المرأة المصرية
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}

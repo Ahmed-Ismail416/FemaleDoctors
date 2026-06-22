@@ -1,0 +1,145 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Plus, Edit2, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Governorate } from "@/lib/types";
+import { createClient } from "@/lib/supabase/client";
+
+export default function AdminGovernoratesPage() {
+  const supabase = createClient();
+  const [governorates, setGovernorates] = useState<Governorate[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [newName, setNewName] = useState("");
+
+  useEffect(() => {
+    async function loadGovernorates() {
+      const { data } = await supabase.from("governorates").select("*").order("name_ar");
+      if (data) {
+        setGovernorates(data);
+      }
+      setLoading(false);
+    }
+    loadGovernorates();
+  }, [supabase]);
+
+  const handleAdd = async () => {
+    if (!newName.trim()) return;
+    
+    const newGov = {
+      name_ar: newName,
+      name_en: newName,
+      slug: newName.replace(/\s+/g, "-"),
+    };
+
+    const { data, error } = await supabase
+      .from("governorates")
+      .insert([newGov])
+      .select()
+      .single();
+
+    if (!error && data) {
+      setGovernorates((prev) => [...prev, data]);
+      setNewName("");
+      setShowAdd(false);
+    } else if (error) {
+      alert("Error adding governorate: " + error.message);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm("هل أنت متأكد من حذف هذه المحافظة؟")) {
+      const { error } = await supabase.from("governorates").delete().eq("id", id);
+      if (!error) {
+        setGovernorates((prev) => prev.filter((g) => g.id !== id));
+      } else {
+        alert("Error deleting governorate: " + error.message);
+      }
+    }
+  };
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">إدارة المحافظات</h1>
+          <p className="text-gray-500 text-sm mt-1">{governorates.length} محافظة</p>
+        </div>
+        <Button variant="pink" onClick={() => setShowAdd(true)} id="add-governorate-btn">
+          <Plus className="w-4 h-4" />
+          إضافة محافظة
+        </Button>
+      </div>
+
+      {showAdd && (
+        <div className="bg-purple-50 rounded-2xl p-5 mb-6 border border-purple-100">
+          <h2 className="font-bold text-gray-900 mb-3">إضافة محافظة جديدة</h2>
+          <div className="flex gap-3">
+            <Input
+              id="new-governorate-name"
+              placeholder="اسم المحافظة بالعربية"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className="flex-1"
+            />
+            <Button variant="pink" onClick={handleAdd}>إضافة</Button>
+            <Button variant="outline" onClick={() => setShowAdd(false)}>إلغاء</Button>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-white rounded-2xl shadow-sm border border-pink-100 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-purple-50 border-b border-purple-100">
+              <th className="text-right font-semibold text-purple-800 p-4">رقم</th>
+              <th className="text-right font-semibold text-purple-800 p-4">الاسم بالعربية</th>
+              <th className="text-right font-semibold text-purple-800 p-4">الاسم بالإنجليزية</th>
+              <th className="text-right font-semibold text-purple-800 p-4">المعرف</th>
+              <th className="text-right font-semibold text-purple-800 p-4">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="text-center py-12 text-gray-400">
+                  <div className="w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  جاري تحميل المحافظات...
+                </td>
+              </tr>
+            ) : governorates.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="text-center py-12 text-gray-400">لا توجد محافظات</td>
+              </tr>
+            ) : (
+              governorates.map((gov) => (
+                <tr key={gov.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="p-4 text-gray-500 text-xs">{gov.id}</td>
+                  <td className="p-4 font-medium text-gray-900">{gov.name_ar}</td>
+                  <td className="p-4 text-gray-600">{gov.name_en}</td>
+                  <td className="p-4 text-gray-400 font-mono text-xs">{gov.slug}</td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      <button className="p-1.5 rounded-lg text-purple-500 hover:bg-purple-50" title="تعديل">
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(gov.id)}
+                        className="p-1.5 rounded-lg text-red-400 hover:bg-red-50"
+                        title="حذف"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

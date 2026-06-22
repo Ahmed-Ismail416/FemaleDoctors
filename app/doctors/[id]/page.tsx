@@ -105,11 +105,6 @@ export default async function DoctorProfilePage({ params }: Props) {
                   )}
                   {/* Badges */}
                   <div className="absolute top-4 right-4 flex flex-col gap-2">
-                    {doctor.featured && (
-                      <Badge variant="default">
-                        <Star className="w-3 h-3 ml-1 fill-white" /> مميزة
-                      </Badge>
-                    )}
                     {doctor.verified && (
                       <Badge variant="success">
                         <CheckCircle2 className="w-3 h-3 ml-1" /> موثقة

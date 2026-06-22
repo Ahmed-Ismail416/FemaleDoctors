@@ -46,21 +46,6 @@ export default function AdminDoctorsPage() {
     }
   };
 
-  const toggleFeatured = async (id: number) => {
-    const doc = doctors.find((d) => d.id === id);
-    if (!doc) return;
-    const newFeatured = !doc.featured;
-    const res = await fetch("/api/doctors", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, featured: newFeatured }),
-    });
-    if (res.ok) {
-      setDoctors((prev) =>
-        prev.map((d) => (d.id === id ? { ...d, featured: newFeatured } : d))
-      );
-    }
-  };
 
   const deleteDoctor = async (id: number) => {
     if (confirm("هل أنت متأكد من حذف هذه الطبيبة؟")) {
@@ -138,12 +123,7 @@ export default function AdminDoctorsPage() {
                         <Badge variant={doctor.verified ? "success" : "warning"} className="w-fit text-xs">
                           {doctor.verified ? "موثقة" : "غير موثقة"}
                         </Badge>
-                        {doctor.featured && (
-                          <Badge variant="default" className="w-fit text-xs">
-                            <Star className="w-2.5 h-2.5 ml-1 fill-white" />
-                            مميزة
-                          </Badge>
-                        )}
+
                       </div>
                     </td>
                     <td className="p-4">
@@ -159,17 +139,7 @@ export default function AdminDoctorsPage() {
                         >
                           <CheckCircle2 className="w-4 h-4" />
                         </button>
-                        <button
-                          onClick={() => toggleFeatured(doctor.id)}
-                          className={`p-1.5 rounded-lg transition-colors ${
-                            doctor.featured
-                              ? "text-yellow-500 hover:bg-yellow-50"
-                              : "text-gray-400 hover:bg-gray-100"
-                          }`}
-                          title={doctor.featured ? "إلغاء التمييز" : "تمييز"}
-                        >
-                          <Star className={`w-4 h-4 ${doctor.featured ? "fill-yellow-500" : ""}`} />
-                        </button>
+
                         <Link href={`/doctors/${doctor.id}`} className="p-1.5 rounded-lg text-blue-500 hover:bg-blue-50" title="عرض">
                           <Eye className="w-4 h-4" />
                         </Link>

@@ -59,16 +59,10 @@ export default function Footer() {
             <h3 className="font-bold text-white mb-4 text-base">تواصل معنا</h3>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-purple-200 text-sm">
-                <Mail className="w-4 h-4 text-pink-300 shrink-0" />
-                <span>info@femaldoctors.eg</span>
-              </li>
-              <li className="flex items-center gap-2 text-purple-200 text-sm">
-                <Phone className="w-4 h-4 text-pink-300 shrink-0" />
-                <span>01000000000</span>
-              </li>
-              <li className="flex items-start gap-2 text-purple-200 text-sm">
-                <MapPin className="w-4 h-4 text-pink-300 shrink-0 mt-0.5" />
-                <span>القاهرة، جمهورية مصر العربية</span>
+                <a href="https://wa.me/201556812414" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-purple-200 hover:text-pink-300 transition-all">
+                  <Phone className="w-4 h-4 text-pink-300 shrink-0" />
+                  <span>واتساب: 01556812414</span>
+                </a>
               </li>
             </ul>
           </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Star, Sparkles } from "lucide-react";
+import { ArrowLeft, Star, Sparkles, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroSearch from "@/components/home/HeroSearch";
 import StatsSection from "@/components/home/StatsSection";
@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [featuredDoctors, governorates, totalDoctors, totalGovernorates, totalCities] =
+  const [latestDoctors, governorates, totalDoctors, totalGovernorates, totalCities] =
     await Promise.all([
       prisma.doctor.findMany({
-        where: { verified: true, featured: true },
+        where: { verified: true },
         include: {
           governorate: { select: { id: true, name_ar: true, name_en: true, slug: true } },
           city: { select: { id: true, name_ar: true, name_en: true, slug: true } },
@@ -38,12 +38,16 @@ export default async function HomePage() {
     <>
       {/* Hero Section */}
       <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-purple-700 to-pink-600" />
+        {/* Image background with overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/veiled_doctors.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/60 via-purple-900/50 to-pink-900/40" />
 
         {/* Decorative orbs */}
-        <div className="absolute top-20 right-20 w-64 h-64 rounded-full bg-pink-400/20 blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 rounded-full bg-purple-400/20 blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-20 right-20 w-64 h-64 rounded-full bg-pink-400/10 blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 rounded-full bg-purple-400/10 blur-3xl animate-pulse delay-1000" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
 
         {/* Grid pattern overlay */}
@@ -125,11 +129,11 @@ export default async function HomePage() {
           <div className="flex items-center justify-between mb-10">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Star className="w-5 h-5 text-purple-600 fill-purple-600" />
-                <span className="text-purple-600 font-semibold text-sm">طبيبات مميزات</span>
+                <Users className="w-5 h-5 text-purple-600" />
+                <span className="text-purple-600 font-semibold text-sm">طبيبات الدليل</span>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900">الطبيبات المميزات</h2>
-              <p className="text-gray-500 mt-1">أبرز الطبيبات في مختلف التخصصات الطبية في مصر</p>
+              <h2 className="text-3xl font-bold text-gray-900">طبيبات مصر</h2>
+              <p className="text-gray-500 mt-1">أحدث الطبيبات في مختلف التخصصات الطبية في مصر</p>
             </div>
             <Button variant="outline" asChild className="hidden sm:flex">
               <Link href="/doctors">
@@ -140,7 +144,7 @@ export default async function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredDoctors.map((doctor) => (
+            {latestDoctors.map((doctor) => (
               <DoctorCard key={doctor.id} doctor={doctor as any} />
             ))}
           </div>

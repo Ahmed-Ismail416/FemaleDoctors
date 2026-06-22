@@ -6,7 +6,7 @@ import { Search, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Governorate } from "@/lib/types";
+import { Governorate, SPECIALTIES } from "@/lib/types";
 
 interface HeroSearchProps {
   governorates: Governorate[];
@@ -16,16 +16,18 @@ export default function HeroSearch({ governorates }: HeroSearchProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [governorate, setGovernorate] = useState("");
+  const [specialty, setSpecialty] = useState("");
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (search) params.set("search", search);
-    if (governorate) params.set("governorate", governorate);
+    if (governorate && governorate !== "all") params.set("governorate", governorate);
+    if (specialty && specialty !== "all") params.set("specialty", specialty);
     router.push(`/doctors?${params.toString()}`);
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-2xl w-full mx-auto border border-white/50">
+    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-3xl w-full mx-auto border border-white/50">
       <p className="text-center text-gray-600 text-sm mb-4 font-medium">
         ابحثي عن طبيبة في مختلف التخصصات الطبية
       </p>
@@ -42,12 +44,28 @@ export default function HeroSearch({ governorates }: HeroSearchProps) {
           />
         </div>
         <div className="relative sm:w-44">
+          <Select value={specialty} onValueChange={setSpecialty}>
+            <SelectTrigger id="hero-specialty" className="h-12">
+              <SelectValue placeholder="التخصص" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">كل التخصصات</SelectItem>
+              {SPECIALTIES.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="relative sm:w-44">
           <Select value={governorate} onValueChange={setGovernorate}>
             <SelectTrigger id="hero-governorate" className="h-12">
               <MapPin className="w-4 h-4 text-gray-400 ml-1" />
               <SelectValue placeholder="المحافظة" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="all">كل المحافظات</SelectItem>
               {governorates.map((gov) => (
                 <SelectItem key={gov.id} value={String(gov.id)}>
                   {gov.name_ar}

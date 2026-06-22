@@ -9,7 +9,6 @@ export async function GET(request: Request) {
   const governorate = searchParams.get("governorate");
   const city = searchParams.get("city");
   const specialty = searchParams.get("specialty");
-  const featured = searchParams.get("featured");
   const page = parseInt(searchParams.get("page") || "1");
   const pageSize = parseInt(searchParams.get("pageSize") || "12");
 
@@ -25,7 +24,6 @@ export async function GET(request: Request) {
   if (governorate) where.governorate_id = parseInt(governorate);
   if (city) where.city_id = parseInt(city);
   if (specialty) where.specialty = specialty;
-  if (featured === "true") where.featured = true;
 
   const [data, count] = await Promise.all([
     prisma.doctor.findMany({
@@ -34,7 +32,7 @@ export async function GET(request: Request) {
         governorate: { select: { id: true, name_ar: true, name_en: true, slug: true } },
         city: { select: { id: true, name_ar: true, name_en: true, slug: true } },
       },
-      orderBy: [{ featured: "desc" }, { created_at: "desc" }],
+      orderBy: { created_at: "desc" },
       skip: (page - 1) * pageSize,
       take: pageSize,
     }),
@@ -67,7 +65,7 @@ export async function POST(request: Request) {
       map_url: body.map_url || null,
       image_url: body.image_url || null,
       verified: body.verified ?? false,
-      featured: body.featured ?? false,
+      featured: false,
     },
   });
 

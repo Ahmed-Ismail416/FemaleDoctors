@@ -8,7 +8,6 @@ export default async function AdminDashboardPage() {
   const [
     totalDoctors,
     verifiedDoctors,
-    featuredDoctors,
     pendingApps,
     approvedApps,
     rejectedApps,
@@ -17,7 +16,6 @@ export default async function AdminDashboardPage() {
   ] = await Promise.all([
     prisma.doctor.count(),
     prisma.doctor.count({ where: { verified: true } }),
-    prisma.doctor.count({ where: { featured: true } }),
     prisma.application.count({ where: { status: "pending" } }),
     prisma.application.count({ where: { status: "approved" } }),
     prisma.application.count({ where: { status: "rejected" } }),
@@ -65,14 +63,6 @@ export default async function AdminDashboardPage() {
       color: "text-red-600",
       bg: "bg-red-50",
       href: "/admin/applications",
-    },
-    {
-      label: "طبيبات مميزات",
-      value: featuredDoctors,
-      icon: <Star className="w-6 h-6" />,
-      color: "text-yellow-600",
-      bg: "bg-yellow-50",
-      href: "/admin/featured",
     },
     {
       label: "المحافظات",

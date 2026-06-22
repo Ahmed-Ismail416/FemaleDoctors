@@ -15,7 +15,6 @@ const navItems = [
   { href: "/admin/applications", label: "الطلبات المقدمة", icon: ClipboardList },
   { href: "/admin/governorates", label: "المحافظات", icon: MapPin },
   { href: "/admin/cities", label: "المدن", icon: Building2 },
-  { href: "/admin/featured", label: "الطبيبات المميزات", icon: Star },
 ];
 
 export default function AdminSidebar() {

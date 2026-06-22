@@ -122,9 +122,6 @@ export default function AdminLoginPage() {
             </Button>
           </form>
 
-          <p className="text-center text-xs text-gray-400 mt-5">
-            للتجربة: admin@admin.com / admin123
-          </p>
         </div>
       </div>
     </div>

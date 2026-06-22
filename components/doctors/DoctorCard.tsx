@@ -36,12 +36,6 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
         )}
         {/* Badges overlay */}
         <div className="absolute top-3 right-3 flex flex-col gap-1">
-          {doctor.featured && (
-            <Badge variant="default" className="text-xs shadow-sm">
-              <Star className="w-3 h-3 ml-1 fill-white" />
-              مميزة
-            </Badge>
-          )}
           {doctor.verified && (
             <Badge variant="success" className="text-xs shadow-sm">
               ✓ موثقة

@@ -65,7 +65,7 @@ export default async function DoctorsPage({
         governorate: { select: { id: true, name_ar: true, name_en: true, slug: true } },
         city: { select: { id: true, name_ar: true, name_en: true, slug: true } },
       },
-      orderBy: [{ featured: "desc" }, { created_at: "desc" }],
+      orderBy: { created_at: "desc" },
       take: PAGE_SIZE,
       skip,
     }),

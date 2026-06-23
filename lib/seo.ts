@@ -1,5 +1,5 @@
 // ─── Shared SEO constants ──────────────────────────────────────────────────
-export const SITE_URL = "https://femalydoctors.eg";
+export const SITE_URL = "https://female-doctors.vercel.app";
 export const SITE_NAME = "دليل طبيبات مصر";
 export const SITE_DESCRIPTION =
   "دليل موثوق لطبيبات مصر في جميع التخصصات الطبية والمحافظات. ابحثي عن طبيبة نساء، جراحة، باطنة، وغيرها.";

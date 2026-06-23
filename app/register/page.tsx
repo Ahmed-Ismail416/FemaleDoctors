@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
-  CheckCircle2, AlertCircle, Upload, Heart, Info
+  CheckCircle2, MessageCircle, Upload, Heart, Info
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -179,14 +179,22 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        {/* Important Notice */}
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-8 flex gap-3">
-          <AlertCircle className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
+        {/* WhatsApp CTA */}
+        <div className="bg-green-50 border border-green-200 rounded-2xl p-4 mb-6 flex gap-3">
+          <MessageCircle className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
           <div>
-            <p className="font-bold text-amber-800 mb-1">تنبيه هام</p>
-            <p className="text-amber-700 text-sm leading-relaxed">
-              متاح التسجيل للطبيبات الإناث فقط، وسيتم مراجعة جميع الطلبات قبل النشر.
-              يتطلب التسجيل رفع صورة شخصية ووثيقة ترخيص طبي سارية لضمان موثوقية الدليل.
+            <p className="font-bold text-green-800 mb-0.5 text-sm">للسرعة في المراجعة والنشر</p>
+            <p className="text-green-700 text-sm leading-relaxed">
+              تواصلي معنا مباشرة عبر{" "}
+              <a
+                href="https://wa.me/201556812414"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold underline hover:text-green-900 transition-colors"
+              >
+                واتساب: 01556812414
+              </a>
+              {" "}لإدراجكِ بسرعة في الدليل.
             </p>
           </div>
         </div>
@@ -228,7 +236,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  رقم واتساب
+                  رقم واتساب{" "}<span className="text-xs text-gray-400 font-normal">(اختياري - يساعد المريضات في التواصل)</span>
                 </label>
                 <Input
                   id="whatsapp"
@@ -241,7 +249,7 @@ export default function RegisterPage() {
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  البريد الإلكتروني
+                  البريد الإلكتروني{" "}<span className="text-xs text-gray-400 font-normal">(اختياري)</span>
                 </label>
                 <Input
                   id="email"
@@ -288,7 +296,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  المنطقة / الحي
+                  المنطقة / الحي{" "}<span className="text-xs text-gray-400 font-normal">(اختياري)</span>
                 </label>
                 <Select
                   value={formData.city_id}
@@ -321,7 +329,7 @@ export default function RegisterPage() {
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  رابط الموقع على خرائط جوجل
+                  رابط الموقع على خرائط جوجل{" "}<span className="text-xs text-gray-400 font-normal">(اختياري)</span>
                 </label>
                 <Input
                   id="map_url"
@@ -364,7 +372,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  نبذة تعريفية
+                  نبذة تعريفية{" "}<span className="text-xs text-gray-400 font-normal">(اختياري - تظهر في ملفك الشخصي)</span>
                 </label>
                 <Textarea
                   id="bio"
@@ -387,7 +395,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  الصورة الشخصية <span className="text-red-500">*</span>
+                  الصورة الشخصية{" "}<span className="text-xs text-gray-400 font-normal">(اختياري - تزيد الثقة)</span>
                 </label>
                 <label
                   htmlFor="image_upload"
@@ -413,7 +421,7 @@ export default function RegisterPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  الترخيص / التحقق المهني <span className="text-red-500">*</span>
+                  التحقق المهني{" "}<span className="text-xs text-gray-400 font-normal">(اختياري - لتسريع المراجعة)</span>
                 </label>
                 <label
                   htmlFor="license_upload"

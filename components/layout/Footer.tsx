@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+import { Heart, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -21,17 +21,7 @@ export default function Footer() {
               منصة متخصصة في توجيه السيدات للعثور على أفضل الطبيبات في مختلف التخصصات الطبية في جميع محافظات مصر.
               نؤمن بحق المرأة في الرعاية الصحية على يد طبيبة متخصصة.
             </p>
-            <div className="flex items-center gap-3 mt-6">
-              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-                <Twitter className="w-4 h-4" />
-              </a>
-            </div>
+
           </div>
 
           {/* Quick Links */}
@@ -39,11 +29,10 @@ export default function Footer() {
             <h3 className="font-bold text-white mb-4 text-base">روابط سريعة</h3>
             <ul className="space-y-2">
               {[
-                { href: "/", label: "الصفحة الرئيسية" },
                 { href: "/doctors", label: "دليل الطبيبات" },
                 { href: "/register", label: "تسجيل طبيبة جديدة" },
                 { href: "/contact", label: "تواصل معنا" },
-                { href: "/admin", label: "لوحة الإدارة" },
+                { href: "/developer", label: "المطور" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-purple-200 hover:text-pink-300 text-sm transition-colors">
@@ -73,7 +62,10 @@ export default function Footer() {
             © {new Date().getFullYear()} دليل طبيبات مصر. جميع الحقوق محفوظة.
           </p>
           <p className="text-purple-400 text-xs">
-            صُنع بـ <Heart className="inline w-3 h-3 fill-pink-400 text-pink-400" /> لصحة المرأة المصرية
+            صُنع بـ <Heart className="inline w-3 h-3 fill-pink-400 text-pink-400" /> بواسطة{" "}
+            <Link href="/developer" className="hover:text-pink-300 transition-colors underline underline-offset-2">
+              Ahmed Ismail
+            </Link>
           </p>
         </div>
       </div>

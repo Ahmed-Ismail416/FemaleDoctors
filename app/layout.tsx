@@ -80,8 +80,9 @@ export const metadata: Metadata = {
     },
   },
 
-  // Add your Search Console verification token here when ready:
-  // verification: { google: "YOUR_GOOGLE_VERIFICATION_TOKEN" },
+  verification: {
+    google: "wPpa-WdZfyX7QzuMX4bQVzmUvKmcaarfOt4Iz9KS1Sg",
+  },
 };
 
 // ── Global JSON-LD: WebSite + Organization ──────────────────────────────────

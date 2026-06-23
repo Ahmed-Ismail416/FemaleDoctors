@@ -10,25 +10,59 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { buildWhatsAppLink } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
+import {
+  SITE_URL, SITE_NAME, OG_IMAGE,
+  doctorTitle, doctorDescription, buildKeywords, canonical,
+} from "@/lib/seo";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
+// ── Dynamic Metadata ─────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const doctor = await prisma.doctor.findUnique({
     where: { id: parseInt(id) },
-    include: { governorate: true },
+    include: { governorate: true, city: true },
   });
 
   if (!doctor) return { title: "طبيبة غير موجودة" };
+
+  const govName = doctor.governorate?.name_ar ?? "مصر";
+  const cityName = doctor.city?.name_ar ?? null;
+  const pageUrl = canonical(`/doctors/${id}`);
+  const title = doctorTitle(doctor.name, doctor.specialty, govName);
+  const description = doctorDescription(
+    doctor.name, doctor.specialty, govName, cityName, doctor.address,
+  );
+
   return {
-    title: `${doctor.name} - ${doctor.specialty}`,
-    description: `${doctor.name} - ${doctor.specialty} في ${doctor.governorate?.name_ar}. ${doctor.bio?.slice(0, 150)}`,
+    title,
+    description,
+    keywords: buildKeywords(doctor.specialty, govName),
+    alternates: { canonical: pageUrl },
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      type: "profile",
+      locale: "ar_EG",
+      siteName: SITE_NAME,
+      images: doctor.image_url
+        ? [{ url: doctor.image_url, alt: doctor.name }]
+        : [OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: doctor.image_url ? [doctor.image_url] : [OG_IMAGE.url],
+    },
   };
 }
 
+// ── Page Component ───────────────────────────────────────────────────────────
 export default async function DoctorProfilePage({ params }: Props) {
   const { id } = await params;
   const doctor = await prisma.doctor.findUnique({
@@ -42,6 +76,8 @@ export default async function DoctorProfilePage({ params }: Props) {
   if (!doctor) notFound();
 
   const whatsappLink = doctor.whatsapp ? buildWhatsAppLink(doctor.whatsapp) : null;
+  const govName = doctor.governorate?.name_ar ?? "مصر";
+  const pageUrl = canonical(`/doctors/${id}`);
 
   // Extract clean initials (strips Arabic doctor prefixes)
   const getInitials = (name: string) => {
@@ -49,29 +85,77 @@ export default async function DoctorProfilePage({ params }: Props) {
     return clean.trim().charAt(0) || "ط";
   };
 
-  // JSON-LD structured data
-  const structuredData = {
+  // ── JSON-LD: Physician + MedicalBusiness + BreadcrumbList ────────────────
+  const physicianSchema = {
     "@context": "https://schema.org",
-    "@type": "Physician",
+    "@type": ["Physician", "MedicalBusiness"],
+    "@id": `${pageUrl}#physician`,
     name: doctor.name,
     medicalSpecialty: doctor.specialty,
+    description: doctor.bio ?? undefined,
+    url: pageUrl,
+    telephone: doctor.phone,
+    ...(doctor.whatsapp && { faxNumber: doctor.whatsapp }),
+    ...(doctor.email && { email: doctor.email }),
+    ...(doctor.image_url && {
+      image: { "@type": "ImageObject", url: doctor.image_url, name: doctor.name },
+    }),
     address: {
       "@type": "PostalAddress",
       streetAddress: doctor.address,
-      addressLocality: doctor.city?.name_ar,
-      addressRegion: doctor.governorate?.name_ar,
+      addressLocality: doctor.city?.name_ar ?? doctor.governorate?.name_ar,
+      addressRegion: govName,
       addressCountry: "EG",
     },
-    telephone: doctor.phone,
-    image: doctor.image_url,
+    ...(doctor.map_url && { hasMap: doctor.map_url }),
+    areaServed: {
+      "@type": "AdministrativeArea",
+      name: govName,
+      containedInPlace: { "@type": "Country", name: "Egypt" },
+    },
+    isAcceptingNewPatients: true,
+    availableService: {
+      "@type": "MedicalTherapy",
+      name: doctor.specialty,
+    },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "الرئيسية",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "دليل الطبيبات",
+        item: canonical("/doctors"),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: doctor.name,
+        item: pageUrl,
+      },
+    ],
   };
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(physicianSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       <div className="min-h-screen bg-gray-50">
         {/* Breadcrumb */}
         <div className="bg-white border-b border-pink-100 py-3">
@@ -81,7 +165,9 @@ export default async function DoctorProfilePage({ params }: Props) {
               <span>/</span>
               <Link href="/doctors" className="hover:text-purple-600 transition-colors">الطبيبات</Link>
               <span>/</span>
-              <span className="text-gray-900 font-medium truncate max-w-[150px] sm:max-w-none">{doctor.name}</span>
+              <span className="text-gray-900 font-medium truncate max-w-[150px] sm:max-w-none">
+                {doctor.name}
+              </span>
             </nav>
           </div>
         </div>
@@ -100,7 +186,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   {doctor.image_url ? (
                     <Image
                       src={doctor.image_url}
-                      alt={doctor.name}
+                      alt={`${doctor.name} - طبيبة ${doctor.specialty} في ${govName}`}
                       fill
                       sizes="80px"
                       loading="eager"
@@ -131,12 +217,12 @@ export default async function DoctorProfilePage({ params }: Props) {
                       href={doctor.map_url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={`موقع عيادة ${doctor.name} على خرائط جوجل`}
                       className="flex items-center gap-1 text-[11px] text-gray-500 hover:text-purple-600 transition-colors mb-1"
                     >
                       <MapPin className="w-3 h-3 text-purple-400 shrink-0" />
                       <span className="truncate">
-                        {doctor.governorate?.name_ar}
-                        {doctor.city && ` - ${doctor.city.name_ar}`}
+                        {govName}{doctor.city && ` - ${doctor.city.name_ar}`}
                       </span>
                       <Map className="w-3 h-3 text-purple-400 shrink-0" />
                     </a>
@@ -144,8 +230,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                     <div className="flex items-center gap-1 text-[11px] text-gray-500 mb-1">
                       <MapPin className="w-3 h-3 text-purple-400 shrink-0" />
                       <span className="truncate">
-                        {doctor.governorate?.name_ar}
-                        {doctor.city && ` - ${doctor.city.name_ar}`}
+                        {govName}{doctor.city && ` - ${doctor.city.name_ar}`}
                       </span>
                     </div>
                   )}
@@ -156,6 +241,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   {/* Phone */}
                   <a
                     href={`tel:${doctor.phone}`}
+                    aria-label={`اتصل بـ ${doctor.name}`}
                     className="flex items-center gap-1 text-[11px] text-gray-500 hover:text-green-600 transition-colors"
                   >
                     <Phone className="w-3 h-3 text-green-400 shrink-0" />
@@ -169,23 +255,21 @@ export default async function DoctorProfilePage({ params }: Props) {
                 {whatsappLink ? (
                   <>
                     <Button variant="whatsapp" className="flex-1 h-11 text-sm font-bold rounded-xl" asChild>
-                      <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                        <MessageCircle className="w-4 h-4 shrink-0" />
-                        واتساب
+                      <a href={whatsappLink} target="_blank" rel="noopener noreferrer"
+                         aria-label={`تواصل مع ${doctor.name} عبر واتساب`}>
+                        <MessageCircle className="w-4 h-4 shrink-0" />واتساب
                       </a>
                     </Button>
                     <Button variant="default" className="flex-1 h-11 text-sm font-bold rounded-xl" asChild>
-                      <a href={`tel:${doctor.phone}`}>
-                        <Phone className="w-4 h-4 shrink-0" />
-                        اتصال
+                      <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ ${doctor.name}`}>
+                        <Phone className="w-4 h-4 shrink-0" />اتصال
                       </a>
                     </Button>
                   </>
                 ) : (
                   <Button variant="default" className="w-full h-11 text-sm font-bold rounded-xl" asChild>
                     <a href={`tel:${doctor.phone}`}>
-                      <Phone className="w-4 h-4 shrink-0" />
-                      {doctor.phone}
+                      <Phone className="w-4 h-4 shrink-0" />{doctor.phone}
                     </a>
                   </Button>
                 )}
@@ -196,8 +280,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                 <div className="px-4 pb-4">
                   <Button variant="secondary" className="w-full h-10 text-sm rounded-xl" asChild>
                     <a href={doctor.map_url} target="_blank" rel="noopener noreferrer">
-                      <Map className="w-4 h-4 shrink-0" />
-                      عرض على خرائط جوجل
+                      <Map className="w-4 h-4 shrink-0" />عرض على خرائط جوجل
                     </a>
                   </Button>
                 </div>
@@ -218,7 +301,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   {doctor.image_url ? (
                     <Image
                       src={doctor.image_url}
-                      alt={doctor.name}
+                      alt={`${doctor.name} - طبيبة ${doctor.specialty} في ${govName}`}
                       fill
                       sizes="(max-width: 1024px) 100vw, 33vw"
                       loading="eager"
@@ -250,8 +333,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Building2 className="w-4 h-4 text-purple-500 shrink-0" />
                       <span>
-                        {doctor.governorate?.name_ar}
-                        {doctor.city && ` - ${doctor.city.name_ar}`}
+                        {govName}{doctor.city && ` - ${doctor.city.name_ar}`}
                       </span>
                     </div>
                   </div>
@@ -262,32 +344,29 @@ export default async function DoctorProfilePage({ params }: Props) {
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-pink-100 space-y-3">
                 <h2 className="font-bold text-gray-900 mb-4">التواصل مع الطبيبة</h2>
                 <Button variant="default" size="lg" className="w-full" asChild>
-                  <a href={`tel:${doctor.phone}`}>
-                    <Phone className="w-5 h-5" />
-                    {doctor.phone}
+                  <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ ${doctor.name}`}>
+                    <Phone className="w-5 h-5" />{doctor.phone}
                   </a>
                 </Button>
                 {whatsappLink && (
                   <Button variant="whatsapp" size="lg" className="w-full" asChild>
-                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="w-5 h-5" />
-                      تواصل عبر واتساب
+                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer"
+                       aria-label={`واتساب ${doctor.name}`}>
+                      <MessageCircle className="w-5 h-5" />تواصل عبر واتساب
                     </a>
                   </Button>
                 )}
                 {doctor.email && (
                   <Button variant="outline" size="sm" className="w-full" asChild>
                     <a href={`mailto:${doctor.email}`}>
-                      <Mail className="w-4 h-4" />
-                      {doctor.email}
+                      <Mail className="w-4 h-4" />{doctor.email}
                     </a>
                   </Button>
                 )}
                 {doctor.map_url && (
                   <Button variant="secondary" size="sm" className="w-full" asChild>
                     <a href={doctor.map_url} target="_blank" rel="noopener noreferrer">
-                      <Map className="w-4 h-4" />
-                      عرض على خرائط جوجل
+                      <Map className="w-4 h-4" />عرض على خرائط جوجل
                     </a>
                   </Button>
                 )}
@@ -296,8 +375,7 @@ export default async function DoctorProfilePage({ params }: Props) {
               {/* Back button */}
               <Button variant="outline" asChild className="w-full">
                 <Link href="/doctors">
-                  <ArrowRight className="w-4 h-4" />
-                  العودة للدليل
+                  <ArrowRight className="w-4 h-4" />العودة للدليل
                 </Link>
               </Button>
             </div>
@@ -322,7 +400,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   {[
                     { label: "الاسم", value: doctor.name },
                     { label: "التخصص", value: doctor.specialty },
-                    { label: "المحافظة", value: doctor.governorate?.name_ar || "-" },
+                    { label: "المحافظة", value: govName },
                     { label: "المنطقة", value: doctor.city?.name_ar || "-" },
                     { label: "العنوان", value: doctor.address },
                     { label: "رقم الهاتف", value: doctor.phone },
@@ -346,8 +424,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                     <div className="rounded-xl overflow-hidden h-48 bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center">
                       <Button variant="outline" asChild>
                         <a href={doctor.map_url} target="_blank" rel="noopener noreferrer">
-                          <Map className="w-4 h-4" />
-                          فتح في خرائط جوجل
+                          <Map className="w-4 h-4" />فتح في خرائط جوجل
                         </a>
                       </Button>
                     </div>
@@ -355,13 +432,33 @@ export default async function DoctorProfilePage({ params }: Props) {
                 </div>
               )}
 
-              {/* Mobile-only back button */}
-              <Button variant="outline" asChild className="w-full lg:hidden">
-                <Link href="/doctors">
-                  <ArrowRight className="w-4 h-4" />
-                  العودة لدليل الطبيبات
-                </Link>
-              </Button>
+              {/* Internal links: same governorate doctors */}
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-pink-100">
+                <p className="text-sm text-gray-500 mb-3">
+                  ابحثي عن المزيد من الطبيبات في{" "}
+                  <Link
+                    href={`/doctors?governorate=${doctor.governorate_id}`}
+                    className="text-purple-600 hover:text-purple-800 font-semibold hover:underline transition-colors"
+                    aria-label={`طبيبات ${govName}`}
+                  >
+                    {govName}
+                  </Link>
+                  {" "}أو تخصص{" "}
+                  <Link
+                    href={`/doctors?specialty=${encodeURIComponent(doctor.specialty)}`}
+                    className="text-pink-600 hover:text-pink-800 font-semibold hover:underline transition-colors"
+                    aria-label={`طبيبات ${doctor.specialty}`}
+                  >
+                    {doctor.specialty}
+                  </Link>
+                  .
+                </p>
+                <Button variant="outline" asChild className="w-full lg:hidden">
+                  <Link href="/doctors">
+                    <ArrowRight className="w-4 h-4" />العودة لدليل الطبيبات
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>

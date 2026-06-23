@@ -6,6 +6,7 @@ import { Users, ChevronRight, ChevronLeft } from "lucide-react";
 import DoctorCard from "@/components/doctors/DoctorCard";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
+import { SITE_NAME, OG_IMAGE, BASE_KEYWORDS, canonical } from "@/lib/seo";
 
 const DoctorFiltersAsync = dynamic(
   () => import("@/components/doctors/DoctorFilters"),
@@ -15,9 +16,34 @@ const DoctorFiltersAsync = dynamic(
 );
 
 export const metadata: Metadata = {
-  title: "دليل الطبيبات في مصر",
+  title: `دليل الطبيبات في مصر | ابحثي عن طبيبة موثوقة`,
   description:
-    "تصفح دليل الطبيبات في مختلف التخصصات الطبية في مصر. ابحثي بالاسم أو المحافظة أو المنطقة. معلومات التواصل وعناوين العيادات.",
+    "دليل شامل لطبيبات مصر في جميع التخصصات الطبية والمحافظات. ابحثي عن طبيبة نساء وتوليد، باطنة، جراحة، جلدية، أعصاب، وغيرها. معلومات تواصل وعناوين عيادات موثوقة.",
+  keywords: [
+    ...BASE_KEYWORDS,
+    "طبيبة نساء وتوليد في مصر",
+    "دكتورة نساء موثوقة",
+    "طبيبة باطنة مصر",
+    "طبيبة جراحة عامة",
+    "عنوان عيادة طبيبة",
+    "رقم تليفون طبيبة",
+    "طبيبة قريبة مني",
+  ],
+  alternates: { canonical: canonical("/doctors") },
+  openGraph: {
+    title: `دليل الطبيبات في مصر | ${SITE_NAME}`,
+    description:
+      "دليل شامل لطبيبات مصر في جميع التخصصات والمحافظات. ابحثي عن أقرب طبيبة موثوقة.",
+    url: canonical("/doctors"),
+    type: "website",
+    images: [OG_IMAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `دليل الطبيبات في مصر | ${SITE_NAME}`,
+    description: "دليل شامل لطبيبات مصر في جميع التخصصات والمحافظات.",
+    images: [OG_IMAGE.url],
+  },
 };
 
 interface SearchParams {

@@ -1,17 +1,40 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Star, Sparkles, Users } from "lucide-react";
+import { ArrowLeft, Sparkles, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HeroSearch from "@/components/home/HeroSearch";
 import StatsSection from "@/components/home/StatsSection";
 import CTASection from "@/components/home/CTASection";
 import DoctorCard from "@/components/doctors/DoctorCard";
 import { prisma } from "@/lib/prisma";
+import { SITE_URL, SITE_NAME, OG_IMAGE, BASE_KEYWORDS, canonical } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "دليل طبيبات مصر | في مختلف التخصصات الطبية - الرئيسية",
+  title: `${SITE_NAME} | في مختلف التخصصات الطبية - الرئيسية`,
   description:
-    "ابحثي عن أفضل الطبيبات في مختلف التخصصات الطبية في مصر. دليل موثوق يضم مئات الطبيبات المتخصصات في جميع المحافظات المصرية.",
+    "ابحثي عن أفضل الطبيبات في مختلف التخصصات الطبية في مصر. دليل موثوق يضم مئات الطبيبات الموثوقات في جميع المحافظات المصرية. طبيبة نساء، باطنة، جراحة، وغيرها.",
+  keywords: [
+    ...BASE_KEYWORDS,
+    "طبيبة نساء في القاهرة",
+    "طبيبة نساء في الجيزة",
+    "طبيبة نساء في الإسكندرية",
+    "دكتورة نساء وتوليد",
+    "طبيبة نساء في الفيوم",
+  ],
+  alternates: { canonical: canonical("/") },
+  openGraph: {
+    title: `${SITE_NAME} | في مختلف التخصصات الطبية`,
+    description: "ابحثي عن أفضل الطبيبات في مختلف التخصصات الطبية في مصر. دليل موثوق لطبيبات مصر.",
+    url: SITE_URL,
+    type: "website",
+    images: [OG_IMAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} | في مختلف التخصصات الطبية`,
+    description: "ابحثي عن أفضل الطبيبات في مختلف التخصصات الطبية في مصر.",
+    images: [OG_IMAGE.url],
+  },
 };
 
 export default async function HomePage() {

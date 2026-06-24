@@ -61,12 +61,7 @@ export default function Footer() {
           <p className="text-purple-300 text-sm text-center">
             © {new Date().getFullYear()} دليل طبيبات مصر. جميع الحقوق محفوظة.
           </p>
-          <p className="text-purple-400 text-xs">
-            صُنع بـ <Heart className="inline w-3 h-3 fill-pink-400 text-pink-400" /> بواسطة{" "}
-            <Link href="/developer" className="hover:text-pink-300 transition-colors underline underline-offset-2">
-              Ahmed Ismail
-            </Link>
-          </p>
+        
         </div>
       </div>
     </footer>

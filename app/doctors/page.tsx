@@ -70,7 +70,9 @@ export default async function DoctorsPage({
       { address: { contains: params.search, mode: "insensitive" } },
     ];
   }
-  if (params.governorate) where.governorate_id = parseInt(params.governorate);
+  // Default to governorate 17 (Al-Fayoum) if no parameter is provided
+  const selectedGov = params.governorate === undefined ? "17" : params.governorate;
+  if (selectedGov) where.governorate_id = parseInt(selectedGov);
   if (params.city) where.city_id = parseInt(params.city);
   if (params.specialty) where.specialty = params.specialty;
 
@@ -100,7 +102,7 @@ export default async function DoctorsPage({
 
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const hasFilters =
-    params.search || params.governorate || params.city || params.specialty;
+    params.search || (params.governorate !== undefined && params.governorate !== "17") || params.city || params.specialty;
 
   // Helper to build links preserving existing filters
   const buildPageLink = (pageNum: number) => {

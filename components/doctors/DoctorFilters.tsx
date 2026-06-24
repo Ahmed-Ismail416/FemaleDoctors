@@ -25,7 +25,9 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
   const [isPending, startTransition] = useTransition();
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
-  const [governorate, setGovernorate] = useState(searchParams.get("governorate") || "");
+  const [governorate, setGovernorate] = useState(
+    searchParams.get("governorate") !== null ? searchParams.get("governorate")! : "17"
+  );
   const [city, setCity] = useState(searchParams.get("city") || "");
   const [specialty, setSpecialty] = useState(searchParams.get("specialty") || "");
 
@@ -84,7 +86,7 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
 
   const handleReset = () => {
     setSearch("");
-    setGovernorate("");
+    setGovernorate("17");
     setCity("");
     setSpecialty("");
     startTransition(() => {
@@ -92,13 +94,13 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
     });
   };
 
-  const hasFilters = search || governorate || city || specialty;
+  const hasFilters = search || governorate !== "17" || city || specialty;
 
   return (
     <div className="space-y-4">
       {/* Name Search Box */}
       <div className="bg-white rounded-2xl shadow-sm border border-pink-100 p-5">
-        <div className="flex flex-col md:flex-row gap-3">
+        <div className="flex gap-2 sm:gap-3">
           <div className="relative flex-grow">
             <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             <Input
@@ -114,11 +116,18 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
             variant="pink"
             onClick={handleSearchApply}
             disabled={isPending}
-            className="h-12 px-8 font-bold rounded-xl shadow-sm hover:shadow transition-all shrink-0"
+            className="h-12 px-5 sm:px-8 font-bold rounded-xl shadow-sm hover:shadow transition-all shrink-0"
             id="apply-filters-btn"
           >
             <Search className="w-4 h-4" />
-            {isPending ? "جاري البحث..." : "بحث بالاسم"}
+            {isPending ? (
+              <span>جاري...</span>
+            ) : (
+              <>
+                <span className="hidden sm:inline">بحث بالاسم</span>
+                <span className="inline sm:hidden">بحث</span>
+              </>
+            )}
           </Button>
         </div>
       </div>
@@ -128,19 +137,19 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-purple-600" />
-            <h2 className="text-sm font-bold text-gray-900">تصفية حسب المنطقة أو التخصص</h2>
+            <h2 className="text-sm font-bold text-gray-900">تصفية النتائج حسب المنطقة أو التخصص</h2>
           </div>
           {isPending && (
             <span className="text-xs text-purple-500 animate-pulse font-medium">جاري التحديث...</span>
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {/* Governorate Dropdown */}
-          <div className="space-y-1.5">
-            <label className="block text-[11px] font-semibold text-gray-500 mr-1">المحافظة</label>
+          <div className="space-y-0.5 sm:space-y-1.5">
+            <label className="hidden sm:block text-[11px] font-semibold text-gray-500 mr-1">المحافظة</label>
             <Select value={governorate || "all"} onValueChange={handleGovernorateChange}>
-              <SelectTrigger id="governorate-filter" className="h-10 rounded-xl border-purple-100 bg-gray-50/20 text-xs text-gray-700" disabled={isPending}>
+              <SelectTrigger id="governorate-filter" className="h-9 sm:h-10 rounded-xl border-purple-100 bg-gray-50/20 text-[10px] sm:text-xs text-gray-700 px-2 sm:px-3" disabled={isPending}>
                 <SelectValue placeholder="كل المحافظات" />
               </SelectTrigger>
               <SelectContent>
@@ -155,10 +164,10 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
           </div>
 
           {/* City Dropdown */}
-          <div className="space-y-1.5">
-            <label className="block text-[11px] font-semibold text-gray-500 mr-1">المنطقة / الحي</label>
+          <div className="space-y-0.5 sm:space-y-1.5">
+            <label className="hidden sm:block text-[11px] font-semibold text-gray-500 mr-1">المنطقة / الحي</label>
             <Select value={city || "all"} onValueChange={handleCityChange} disabled={!governorate || isPending}>
-              <SelectTrigger id="city-filter" className="h-10 rounded-xl border-purple-100 bg-gray-50/20 text-xs text-gray-700">
+              <SelectTrigger id="city-filter" className="h-9 sm:h-10 rounded-xl border-purple-100 bg-gray-50/20 text-[10px] sm:text-xs text-gray-700 px-2 sm:px-3">
                 <SelectValue placeholder="كل المناطق" />
               </SelectTrigger>
               <SelectContent>
@@ -173,10 +182,10 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
           </div>
 
           {/* Specialty Dropdown */}
-          <div className="space-y-1.5">
-            <label className="block text-[11px] font-semibold text-gray-500 mr-1">التخصص الطبي</label>
+          <div className="space-y-0.5 sm:space-y-1.5">
+            <label className="hidden sm:block text-[11px] font-semibold text-gray-500 mr-1">التخصص الطبي</label>
             <Select value={specialty || "all"} onValueChange={handleSpecialtyChange} disabled={isPending}>
-              <SelectTrigger id="specialty-filter" className="h-10 rounded-xl border-purple-100 bg-gray-50/20 text-xs text-gray-700">
+              <SelectTrigger id="specialty-filter" className="h-9 sm:h-10 rounded-xl border-purple-100 bg-gray-50/20 text-[10px] sm:text-xs text-gray-700 px-2 sm:px-3">
                 <SelectValue placeholder="كل التخصصات" />
               </SelectTrigger>
               <SelectContent>

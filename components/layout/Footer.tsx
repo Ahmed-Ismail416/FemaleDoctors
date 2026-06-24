@@ -32,7 +32,7 @@ export default function Footer() {
                 { href: "/doctors", label: "دليل الطبيبات" },
                 { href: "/register", label: "تسجيل طبيبة جديدة" },
                 { href: "/contact", label: "تواصل معنا" },
-                {href: "/admin", label: "لوحة الإدارة"}, 
+             
               ].map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-purple-200 hover:text-pink-300 text-sm transition-colors">

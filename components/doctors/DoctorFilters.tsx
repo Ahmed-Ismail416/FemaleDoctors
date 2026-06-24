@@ -59,23 +59,24 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
       });
     },
     [router, search, governorate, city, specialty],
-  );
-
-  // Dropdowns auto-apply immediately
+  );  // Dropdowns auto-apply immediately
   const handleGovernorateChange = (val: string) => {
-    setGovernorate(val);
+    const finalVal = val === "all" ? "" : val;
+    setGovernorate(finalVal);
     setCity(""); // reset city when governorate changes
-    navigate({ governorate: val, city: "" });
+    navigate({ governorate: finalVal, city: "" });
   };
 
   const handleCityChange = (val: string) => {
-    setCity(val);
-    navigate({ city: val });
+    const finalVal = val === "all" ? "" : val;
+    setCity(finalVal);
+    navigate({ city: finalVal });
   };
 
   const handleSpecialtyChange = (val: string) => {
-    setSpecialty(val);
-    navigate({ specialty: val });
+    const finalVal = val === "all" ? "" : val;
+    setSpecialty(finalVal);
+    navigate({ specialty: finalVal });
   };
 
   // Text search: apply on Enter key or button click
@@ -94,91 +95,109 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
   const hasFilters = search || governorate || city || specialty;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-pink-100 p-6">
-      <div className="flex items-center gap-2 mb-5">
-        <Filter className="w-5 h-5 text-purple-600" />
-        <h2 className="text-base font-bold text-gray-900">بحث وتصفية</h2>
-        {isPending && (
-          <span className="mr-auto text-xs text-purple-500 animate-pulse">جاري التحديث...</span>
-        )}
+    <div className="space-y-4">
+      {/* Name Search Box */}
+      <div className="bg-white rounded-2xl shadow-sm border border-pink-100 p-5">
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className="relative flex-grow">
+            <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <Input
+              placeholder="ابحثي باسم الطبيبة (مثال: فاطمة محمد)..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearchApply()}
+              className="pr-10 h-12 rounded-xl text-sm border-purple-100 focus-visible:ring-purple-400 bg-gray-50/10"
+              id="search-input"
+            />
+          </div>
+          <Button
+            variant="pink"
+            onClick={handleSearchApply}
+            disabled={isPending}
+            className="h-12 px-8 font-bold rounded-xl shadow-sm hover:shadow transition-all shrink-0"
+            id="apply-filters-btn"
+          >
+            <Search className="w-4 h-4" />
+            {isPending ? "جاري البحث..." : "بحث بالاسم"}
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Search by name — needs Enter or button */}
-        <div className="relative">
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-          <Input
-            placeholder="اسم الطبيبة..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearchApply()}
-            className="pr-9"
-            id="search-input"
-          />
+      {/* Advanced Filters */}
+      <div className="bg-white rounded-2xl shadow-sm border border-pink-100 p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-purple-600" />
+            <h2 className="text-sm font-bold text-gray-900">تصفية حسب المنطقة أو التخصص</h2>
+          </div>
+          {isPending && (
+            <span className="text-xs text-purple-500 animate-pulse font-medium">جاري التحديث...</span>
+          )}
         </div>
 
-        {/* Governorate — auto-applies on change */}
-        <Select value={governorate} onValueChange={handleGovernorateChange}>
-          <SelectTrigger id="governorate-filter" disabled={isPending}>
-            <SelectValue placeholder="اختر المحافظة" />
-          </SelectTrigger>
-          <SelectContent>
-            {governorates.map((gov) => (
-              <SelectItem key={gov.id} value={String(gov.id)}>
-                {gov.name_ar}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Governorate Dropdown */}
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-semibold text-gray-500 mr-1">المحافظة</label>
+            <Select value={governorate || "all"} onValueChange={handleGovernorateChange}>
+              <SelectTrigger id="governorate-filter" className="h-10 rounded-xl border-purple-100 bg-gray-50/20 text-xs text-gray-700" disabled={isPending}>
+                <SelectValue placeholder="كل المحافظات" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">كل المحافظات</SelectItem>
+                {governorates.map((gov) => (
+                  <SelectItem key={gov.id} value={String(gov.id)}>
+                    {gov.name_ar}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* City — auto-applies on change */}
-        <Select value={city} onValueChange={handleCityChange} disabled={!governorate || isPending}>
-          <SelectTrigger id="city-filter">
-            <SelectValue placeholder="اختر المنطقة" />
-          </SelectTrigger>
-          <SelectContent>
-            {filteredCities.map((c) => (
-              <SelectItem key={c.id} value={String(c.id)}>
-                {c.name_ar}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          {/* City Dropdown */}
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-semibold text-gray-500 mr-1">المنطقة / الحي</label>
+            <Select value={city || "all"} onValueChange={handleCityChange} disabled={!governorate || isPending}>
+              <SelectTrigger id="city-filter" className="h-10 rounded-xl border-purple-100 bg-gray-50/20 text-xs text-gray-700">
+                <SelectValue placeholder="كل المناطق" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">كل المناطق</SelectItem>
+                {filteredCities.map((c) => (
+                  <SelectItem key={c.id} value={String(c.id)}>
+                    {c.name_ar}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Specialty — auto-applies on change */}
-        <Select value={specialty} onValueChange={handleSpecialtyChange} disabled={isPending}>
-          <SelectTrigger id="specialty-filter">
-            <SelectValue placeholder="التخصص" />
-          </SelectTrigger>
-          <SelectContent>
-            {SPECIALTIES.map((s) => (
-              <SelectItem key={s} value={s}>
-                {s}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+          {/* Specialty Dropdown */}
+          <div className="space-y-1.5">
+            <label className="block text-[11px] font-semibold text-gray-500 mr-1">التخصص الطبي</label>
+            <Select value={specialty || "all"} onValueChange={handleSpecialtyChange} disabled={isPending}>
+              <SelectTrigger id="specialty-filter" className="h-10 rounded-xl border-purple-100 bg-gray-50/20 text-xs text-gray-700">
+                <SelectValue placeholder="كل التخصصات" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">كل التخصصات</SelectItem>
+                {SPECIALTIES.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-      <div className="flex items-center gap-3 mt-4">
-        {/* Search button — only for text search field */}
-        <Button
-          variant="pink"
-          onClick={handleSearchApply}
-          disabled={isPending}
-          className="flex-1 sm:flex-none"
-          id="apply-filters-btn"
-        >
-          <Search className="w-4 h-4" />
-          {isPending ? "جاري البحث..." : "بحث"}
-        </Button>
-
-        {/* Clear all filters */}
         {hasFilters && (
-          <Button variant="outline" size="sm" onClick={handleReset} id="reset-filters-btn">
-            <X className="w-4 h-4" />
-            مسح
-          </Button>
+          <div className="flex justify-end mt-4 pt-3 border-t border-purple-50">
+            <Button variant="outline" size="sm" onClick={handleReset} className="h-9 px-4 rounded-xl text-xs text-gray-600 hover:text-purple-700 border-purple-100 hover:bg-purple-50" id="reset-filters-btn">
+              <X className="w-3.5 h-3.5" />
+              إعادة تعيين الكل
+            </Button>
+          </div>
         )}
       </div>
     </div>

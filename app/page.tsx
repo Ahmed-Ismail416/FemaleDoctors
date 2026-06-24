@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Sparkles, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import HeroSearch from "@/components/home/HeroSearch";
 import StatsSection from "@/components/home/StatsSection";
 import CTASection from "@/components/home/CTASection";
 import DoctorCard from "@/components/doctors/DoctorCard";
@@ -105,9 +104,19 @@ export default async function HomePage() {
               آلاف الطبيبات الموثوقات في كل المحافظات.
             </p>
 
-            {/* Search Bar */}
+            {/* CTA Button to directory */}
             <div className="w-full animate-fade-in">
-              <HeroSearch governorates={governorates} />
+              <Button
+                variant="pink"
+                size="xl"
+                asChild
+                className="font-bold text-lg px-10 h-14 rounded-2xl shadow-[0_4px_20px_rgba(236,72,153,0.3)] hover:shadow-[0_8px_30px_rgba(236,72,153,0.5)] transition-all hover:scale-[1.02] active:scale-[0.98] duration-300"
+              >
+                <Link href="/doctors">
+                  ابحثي الآن في الدليل
+                  <ArrowLeft className="w-5 h-5 mr-2" />
+                </Link>
+              </Button>
             </div>
 
             {/* Quick stats */}

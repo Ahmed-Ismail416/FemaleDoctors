@@ -133,7 +133,7 @@ export default async function DoctorsPage({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Page Header */}
-      <div className="bg-gradient-to-br from-purple-800 to-pink-700 text-white py-12">
+      <div className="bg-purple-800 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -233,7 +233,7 @@ export default async function DoctorsPage({
                     href={buildPageLink(pageNum)}
                     className={`w-10 h-10 inline-flex items-center justify-center rounded-xl text-sm font-bold transition-all duration-200 ${
                       isCurrent
-                        ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md shadow-purple-200"
+                        ? "bg-purple-600 text-white shadow-md shadow-purple-200"
                         : "bg-white text-gray-700 border border-gray-150 hover:bg-purple-50 hover:border-purple-200 hover:text-purple-700"
                     }`}
                   >

@@ -6,10 +6,10 @@ export default function NotFound() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-gray-50">
       <div className="text-center px-4">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center mx-auto mb-6">
+        <div className="w-24 h-24 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-6">
           <Heart className="w-12 h-12 text-purple-400" />
         </div>
-        <h1 className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-4">
+        <h1 className="text-8xl font-black text-purple-600 mb-4">
           ٤٠٤
         </h1>
         <h2 className="text-2xl font-bold text-gray-900 mb-3">الصفحة غير موجودة</h2>
@@ -17,7 +17,7 @@ export default function NotFound() {
           عذراً، الصفحة التي تبحثين عنها غير موجودة أو ربما تم نقلها
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button variant="pink" asChild>
+          <Button variant="default" asChild>
             <Link href="/">
               <Heart className="w-4 h-4" />
               الصفحة الرئيسية

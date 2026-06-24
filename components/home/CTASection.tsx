@@ -13,7 +13,7 @@ export default function CTASection() {
   return (
     <section className="py-16 relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-700 via-purple-600 to-pink-600" />
+      <div className="absolute inset-0 bg-purple-600" />
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: "radial-gradient(circle at 20% 80%, #fff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #fff 1px, transparent 1px)",
         backgroundSize: "40px 40px"
@@ -45,9 +45,9 @@ export default function CTASection() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button size="xl" className="bg-white text-purple-700 hover:bg-pink-50 font-bold shadow-lg hover:shadow-xl transition-all" asChild>
+            <Button size="xl" className="bg-white text-purple-600 hover:bg-pink-50 font-bold shadow-lg hover:shadow-xl transition-all" asChild>
               <Link href="/register">
-                <Heart className="w-5 h-5 fill-purple-500 text-purple-500" />
+                <Heart className="w-5 h-5 fill-purple-600 text-purple-600" />
                 سجّلي الآن مجاناً
               </Link>
             </Button>

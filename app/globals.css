@@ -4,25 +4,25 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 43 47% 98%;
+    --foreground: 210 7% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 210 7% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 271 91% 65%;
+    --popover-foreground: 210 7% 11%;
+    --primary: 185 77% 22%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 330 100% 97%;
-    --secondary-foreground: 271 80% 40%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.7% 45%;
-    --accent: 271 91% 95%;
-    --accent-foreground: 271 80% 40%;
+    --secondary: 43 47% 95%;
+    --secondary-foreground: 185 77% 22%;
+    --muted: 43 20% 92%;
+    --muted-foreground: 210 7% 40%;
+    --accent: 345 54% 67%;
+    --accent-foreground: 210 7% 11%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 330 40% 90%;
-    --input: 330 40% 90%;
-    --ring: 271 91% 65%;
+    --border: 185 20% 85%;
+    --input: 185 20% 85%;
+    --ring: 185 77% 22%;
     --radius: 0.75rem;
   }
 
@@ -47,9 +47,9 @@
 }
 
 @layer components {
-  /* Gradient text utility */
+  /* Solid text utility */
   .gradient-text {
-    @apply bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent;
+    @apply text-purple-600;
   }
 
   /* Glass card */
@@ -90,10 +90,10 @@
     border-radius: 10px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #a855f7;
+    background: #0d5c63;
     border-radius: 10px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #7e22ce;
+    background: #093f44;
   }
 }

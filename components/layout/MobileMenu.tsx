@@ -24,7 +24,7 @@ export default function MobileMenu({ navLinks, onClose }: MobileMenuProps) {
           <Link
             href="/register"
             onClick={onClose}
-            className="flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-sm font-medium px-4 py-3 rounded-lg w-full"
+            className="flex items-center justify-center gap-2 bg-purple-600 text-white text-sm font-medium px-4 py-3 rounded-lg w-full hover:bg-purple-700 transition-all"
           >
             <Heart className="w-4 h-4" />
             انضمي للدليل

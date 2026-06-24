@@ -15,7 +15,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-purple-50 text-purple-700",
         link: "text-purple-600 underline-offset-4 hover:underline",
         whatsapp: "bg-green-500 text-white hover:bg-green-600 shadow-sm hover:shadow-md active:scale-95",
-        pink: "bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 shadow-sm hover:shadow-md active:scale-95",
+        pink: "bg-pink-500 text-white hover:bg-pink-600 shadow-sm hover:shadow-md active:scale-95",
       },
       size: {
         default: "h-10 px-4 py-2",

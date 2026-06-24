@@ -4,7 +4,7 @@ export default function DoctorsLoading() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Page Header Skeleton */}
-      <div className="bg-gradient-to-br from-purple-800 to-pink-700 py-12">
+      <div className="bg-purple-800 py-12">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 rounded-full bg-white/20 animate-pulse" />

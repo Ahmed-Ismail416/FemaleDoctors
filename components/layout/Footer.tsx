@@ -3,7 +3,7 @@ import { Heart, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900 text-white">
+    <footer className="bg-[#1A1C1E] text-white border-t border-purple-900/10">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}

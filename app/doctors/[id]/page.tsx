@@ -193,7 +193,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                       className="object-cover object-top"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-200 to-pink-200 text-purple-700 font-bold text-2xl">
+                    <div className="w-full h-full flex items-center justify-center bg-purple-100 text-purple-700 font-bold text-2xl">
                       {getInitials(doctor.name)}
                     </div>
                   )}
@@ -297,7 +297,7 @@ export default async function DoctorProfilePage({ params }: Props) {
             <div className="hidden lg:block lg:col-span-1 space-y-5">
               {/* Profile Card */}
               <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-pink-100">
-                <div className="relative h-56 bg-gradient-to-br from-pink-100 to-purple-100">
+                <div className="relative h-56 bg-purple-50">
                   {doctor.image_url ? (
                     <Image
                       src={doctor.image_url}
@@ -309,7 +309,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-28 h-28 rounded-full bg-gradient-to-br from-purple-300 to-pink-300 flex items-center justify-center text-white text-5xl font-bold shadow-lg">
+                      <div className="w-28 h-28 rounded-full bg-purple-200 flex items-center justify-center text-white text-5xl font-bold shadow-lg">
                         {getInitials(doctor.name)}
                       </div>
                     </div>
@@ -421,7 +421,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                     <h2 className="text-lg font-bold text-gray-900">الموقع على الخريطة</h2>
                   </div>
                   <div className="p-4">
-                    <div className="rounded-xl overflow-hidden h-48 bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center">
+                    <div className="rounded-xl overflow-hidden h-48 bg-purple-50 flex items-center justify-center">
                       <Button variant="outline" asChild>
                         <a href={doctor.map_url} target="_blank" rel="noopener noreferrer">
                           <Map className="w-4 h-4" />فتح في خرائط جوجل

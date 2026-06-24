@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#1A1C1E] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -107,7 +107,7 @@ export default function AdminLoginPage() {
 
             <Button
               type="submit"
-              variant="pink"
+              variant="default"
               size="lg"
               className="w-full"
               disabled={loading}

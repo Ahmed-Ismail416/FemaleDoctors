@@ -36,7 +36,7 @@ export default function AdminSidebar() {
   return (
     <aside
       className={cn(
-        "bg-gradient-to-b from-purple-900 to-purple-800 text-white min-h-screen flex flex-col transition-all duration-300 shrink-0",
+        "bg-[#1A1C1E] border-l border-white/5 text-white min-h-screen flex flex-col transition-all duration-300 shrink-0",
         collapsed ? "w-16" : "w-64"
       )}
     >

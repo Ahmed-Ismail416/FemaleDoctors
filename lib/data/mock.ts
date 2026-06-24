@@ -1,10 +1,175 @@
 import { Doctor, Governorate, City, Application, AdminStats } from "@/lib/types";
 
 export const GOVERNORATES: Governorate[] = [
+  { id: 1, name_ar: "القاهرة", name_en: "Cairo", slug: "cairo", created_at: "2024-01-01" },
+  { id: 2, name_ar: "الجيزة", name_en: "Giza", slug: "giza", created_at: "2024-01-01" },
+  { id: 3, name_ar: "الإسكندرية", name_en: "Alexandria", slug: "alexandria", created_at: "2024-01-01" },
+  { id: 4, name_ar: "القليوبية", name_en: "Qalyubia", slug: "qalyubia", created_at: "2024-01-01" },
+  { id: 5, name_ar: "الدقهلية", name_en: "Dakahlia", slug: "dakahlia", created_at: "2024-01-01" },
+  { id: 6, name_ar: "الغربية", name_en: "Gharbia", slug: "gharbia", created_at: "2024-01-01" },
+  { id: 7, name_ar: "المنوفية", name_en: "Monufia", slug: "monufia", created_at: "2024-01-01" },
+  { id: 8, name_ar: "الشرقية", name_en: "Sharqia", slug: "sharqia", created_at: "2024-01-01" },
+  { id: 9, name_ar: "البحيرة", name_en: "Beheira", slug: "beheira", created_at: "2024-01-01" },
+  { id: 10, name_ar: "دمياط", name_en: "Damietta", slug: "damietta", created_at: "2024-01-01" },
+  { id: 11, name_ar: "بورسعيد", name_en: "Port Said", slug: "port-said", created_at: "2024-01-01" },
+  { id: 12, name_ar: "الإسماعيلية", name_en: "Ismailia", slug: "ismailia", created_at: "2024-01-01" },
+  { id: 13, name_ar: "السويس", name_en: "Suez", slug: "suez", created_at: "2024-01-01" },
+  { id: 14, name_ar: "كفر الشيخ", name_en: "Kafr El-Sheikh", slug: "kafr-el-sheikh", created_at: "2024-01-01" },
+  { id: 15, name_ar: "بني سويف", name_en: "Beni Suef", slug: "beni-suef", created_at: "2024-01-01" },
+  { id: 16, name_ar: "المنيا", name_en: "Minya", slug: "minya", created_at: "2024-01-01" },
   { id: 17, name_ar: "الفيوم", name_en: "Faiyum", slug: "faiyum", created_at: "2024-01-01" },
+  { id: 18, name_ar: "أسيوط", name_en: "Asyut", slug: "asyut", created_at: "2024-01-01" },
+  { id: 19, name_ar: "سوهاج", name_en: "Sohag", slug: "sohag", created_at: "2024-01-01" },
+  { id: 20, name_ar: "قنا", name_en: "Qena", slug: "qena", created_at: "2024-01-01" },
+  { id: 21, name_ar: "الأقصر", name_en: "Luxor", slug: "luxor", created_at: "2024-01-01" },
+  { id: 22, name_ar: "أسوان", name_en: "Aswan", slug: "aswan", created_at: "2024-01-01" },
+  { id: 23, name_ar: "البحر الأحمر", name_en: "Red Sea", slug: "red-sea", created_at: "2024-01-01" },
+  { id: 24, name_ar: "الوادي الجديد", name_en: "New Valley", slug: "new-valley", created_at: "2024-01-01" },
+  { id: 25, name_ar: "مطروح", name_en: "Matrouh", slug: "matrouh", created_at: "2024-01-01" },
+  { id: 26, name_ar: "شمال سيناء", name_en: "North Sinai", slug: "north-sinai", created_at: "2024-01-01" },
+  { id: 27, name_ar: "جنوب سيناء", name_en: "South Sinai", slug: "south-sinai", created_at: "2024-01-01" },
 ];
 
 export const CITIES: City[] = [
+  // Cairo (id: 1)
+  { id: 9, governorate_id: 1, name_ar: "وسط البلد", name_en: "Downtown", slug: "downtown", created_at: "2024-01-01" },
+  { id: 10, governorate_id: 1, name_ar: "مصر الجديدة", name_en: "Heliopolis", slug: "heliopolis", created_at: "2024-01-01" },
+  { id: 11, governorate_id: 1, name_ar: "مدينة نصر", name_en: "Nasr City", slug: "nasr-city", created_at: "2024-01-01" },
+  { id: 12, governorate_id: 1, name_ar: "المعادي", name_en: "Maadi", slug: "maadi", created_at: "2024-01-01" },
+  { id: 13, governorate_id: 1, name_ar: "التجمع الخامس", name_en: "Fifth Settlement", slug: "fifth-settlement", created_at: "2024-01-01" },
+  { id: 14, governorate_id: 1, name_ar: "الشروق", name_en: "Al-Shorouk", slug: "al-shorouk", created_at: "2024-01-01" },
+  { id: 15, governorate_id: 1, name_ar: "حلوان", name_en: "Helwan", slug: "helwan", created_at: "2024-01-01" },
+  { id: 16, governorate_id: 1, name_ar: "شبرا", name_en: "Shubra", slug: "shubra", created_at: "2024-01-01" },
+  { id: 17, governorate_id: 1, name_ar: "الزمالك", name_en: "Zamalek", slug: "zamalek", created_at: "2024-01-01" },
+  { id: 18, governorate_id: 1, name_ar: "الرحاب", name_en: "Al-Rehab", slug: "al-rehab", created_at: "2024-01-01" },
+  { id: 19, governorate_id: 1, name_ar: "مدينتي", name_en: "Madinaty", slug: "madinaty", created_at: "2024-01-01" },
+  { id: 20, governorate_id: 1, name_ar: "بدر", name_en: "Badr", slug: "badr", created_at: "2024-01-01" },
+
+  // Giza (id: 2)
+  { id: 21, governorate_id: 2, name_ar: "المهندسين", name_en: "Mohandessin", slug: "mohandessin", created_at: "2024-01-01" },
+  { id: 22, governorate_id: 2, name_ar: "الدقي", name_en: "Dokki", slug: "dokki", created_at: "2024-01-01" },
+  { id: 23, governorate_id: 2, name_ar: "الهرم", name_en: "Haram", slug: "haram", created_at: "2024-01-01" },
+  { id: 24, governorate_id: 2, name_ar: "فيصل", name_en: "Faisal", slug: "faisal", created_at: "2024-01-01" },
+  { id: 25, governorate_id: 2, name_ar: "6 أكتوبر", name_en: "6th of October", slug: "6th-of-october", created_at: "2024-01-01" },
+  { id: 26, governorate_id: 2, name_ar: "الشيخ زايد", name_en: "Sheikh Zayed", slug: "sheikh-zayed", created_at: "2024-01-01" },
+  { id: 27, governorate_id: 2, name_ar: "العمرانية", name_en: "Omraneya", slug: "omraneya", created_at: "2024-01-01" },
+  { id: 28, governorate_id: 2, name_ar: "إمبابة", name_en: "Imbaba", slug: "imbaba", created_at: "2024-01-01" },
+  { id: 29, governorate_id: 2, name_ar: "البدرشين", name_en: "Al-Badrashein", slug: "al-badrashein", created_at: "2024-01-01" },
+  { id: 30, governorate_id: 2, name_ar: "العياط", name_en: "Al-Ayyat", slug: "al-ayyat", created_at: "2024-01-01" },
+
+  // Alexandria (id: 3)
+  { id: 31, governorate_id: 3, name_ar: "سموحة", name_en: "Smouha", slug: "smouha", created_at: "2024-01-01" },
+  { id: 32, governorate_id: 3, name_ar: "الرمل", name_en: "Al-Raml", slug: "al-raml", created_at: "2024-01-01" },
+  { id: 33, governorate_id: 3, name_ar: "المنشية", name_en: "Al-Mansheya", slug: "al-mansheya", created_at: "2024-01-01" },
+  { id: 34, governorate_id: 3, name_ar: "المنتزة", name_en: "Al-Montazah", slug: "al-montazah", created_at: "2024-01-01" },
+  { id: 35, governorate_id: 3, name_ar: "سيدي بشر", name_en: "Sidi Bishr", slug: "sidi-bishr", created_at: "2024-01-01" },
+  { id: 36, governorate_id: 3, name_ar: "العجمي", name_en: "Al-Ajami", slug: "al-ajami", created_at: "2024-01-01" },
+  { id: 37, governorate_id: 3, name_ar: "العامرية", name_en: "Al-Amriya", slug: "al-amriya", created_at: "2024-01-01" },
+  { id: 38, governorate_id: 3, name_ar: "برج العرب", name_en: "Borg El-Arab", slug: "borg-el-arab", created_at: "2024-01-01" },
+  { id: 39, governorate_id: 3, name_ar: "ميامي", name_en: "Miami", slug: "miami", created_at: "2024-01-01" },
+
+  // Qalyubia (id: 4)
+  { id: 40, governorate_id: 4, name_ar: "بنها", name_en: "Banha", slug: "banha", created_at: "2024-01-01" },
+  { id: 41, governorate_id: 4, name_ar: "شبرا الخيمة", name_en: "Shubra El-Kheima", slug: "shubra-el-kheima", created_at: "2024-01-01" },
+  { id: 42, governorate_id: 4, name_ar: "قليوب", name_en: "Qalyub", slug: "qalyub", created_at: "2024-01-01" },
+  { id: 43, governorate_id: 4, name_ar: "الخانكة", name_en: "Al-Khankah", slug: "al-khankah", created_at: "2024-01-01" },
+  { id: 44, governorate_id: 4, name_ar: "القناطر الخيرية", name_en: "Al-Qanatir Al-Khayriyyah", slug: "al-qanatir-al-khayriyyah", created_at: "2024-01-01" },
+  { id: 45, governorate_id: 4, name_ar: "طوخ", name_en: "Toukh", slug: "toukh", created_at: "2024-01-01" },
+  { id: 46, governorate_id: 4, name_ar: "شبين القناطر", name_en: "Shebin Al-Qanatir", slug: "shebin-al-qanatir", created_at: "2024-01-01" },
+
+  // Dakahlia (id: 5)
+  { id: 47, governorate_id: 5, name_ar: "المنصورة", name_en: "Mansoura", slug: "mansoura", created_at: "2024-01-01" },
+  { id: 48, governorate_id: 5, name_ar: "ميت غمر", name_en: "Mit Ghamr", slug: "mit-ghamr", created_at: "2024-01-01" },
+  { id: 49, governorate_id: 5, name_ar: "السنبلاوين", name_en: "Al-Senbellawein", slug: "al-senbellawein", created_at: "2024-01-01" },
+  { id: 50, governorate_id: 5, name_ar: "طلخا", name_en: "Talkha", slug: "talkha", created_at: "2024-01-01" },
+  { id: 51, governorate_id: 5, name_ar: "دكرنس", name_en: "Dekernes", slug: "dekernes", created_at: "2024-01-01" },
+  { id: 52, governorate_id: 5, name_ar: "بلقاس", name_en: "Belqas", slug: "belqas", created_at: "2024-01-01" },
+  { id: 53, governorate_id: 5, name_ar: "شربين", name_en: "Sherbin", slug: "sherbin", created_at: "2024-01-01" },
+
+  // Gharbia (id: 6)
+  { id: 54, governorate_id: 6, name_ar: "طنطا", name_en: "Tanta", slug: "tanta", created_at: "2024-01-01" },
+  { id: 55, governorate_id: 6, name_ar: "المحلة الكبرى", name_en: "El-Mahalla El-Kubra", slug: "el-mahalla-el-kubra", created_at: "2024-01-01" },
+  { id: 56, governorate_id: 6, name_ar: "كفر الزيات", name_en: "Kafr El-Zayat", slug: "kafr-el-zayat", created_at: "2024-01-01" },
+  { id: 57, governorate_id: 6, name_ar: "زفتى", name_en: "Zefta", slug: "zefta", created_at: "2024-01-01" },
+  { id: 58, governorate_id: 6, name_ar: "بسيون", name_en: "Basyoun", slug: "basyoun", created_at: "2024-01-01" },
+  { id: 59, governorate_id: 6, name_ar: "سمنود", name_en: "Samanoud", slug: "samanoud", created_at: "2024-01-01" },
+
+  // Monufia (id: 7)
+  { id: 60, governorate_id: 7, name_ar: "شبين الكوم", name_en: "Shebin El-Kom", slug: "shebin-el-kom", created_at: "2024-01-01" },
+  { id: 61, governorate_id: 7, name_ar: "أشمون", name_en: "Ashmoun", slug: "ashmoun", created_at: "2024-01-01" },
+  { id: 62, governorate_id: 7, name_ar: "منوف", name_en: "Menouf", slug: "menouf", created_at: "2024-01-01" },
+  { id: 63, governorate_id: 7, name_ar: "تلا", name_en: "Tala", slug: "tala", created_at: "2024-01-01" },
+  { id: 64, governorate_id: 7, name_ar: "الباجور", name_en: "Al-Bagour", slug: "al-bagour", created_at: "2024-01-01" },
+  { id: 65, governorate_id: 7, name_ar: "قويسنا", name_en: "Quwaysna", slug: "quwaysna", created_at: "2024-01-01" },
+  { id: 66, governorate_id: 7, name_ar: "مدينة السادات", name_en: "Sadat City", slug: "sadat-city", created_at: "2024-01-01" },
+
+  // Sharqia (id: 8)
+  { id: 67, governorate_id: 8, name_ar: "الزقازيق", name_en: "Zagazig", slug: "zagazig", created_at: "2024-01-01" },
+  { id: 68, governorate_id: 8, name_ar: "العاشر من رمضان", name_en: "10th of Ramadan", slug: "10th-of-ramadan", created_at: "2024-01-01" },
+  { id: 69, governorate_id: 8, name_ar: "بلبيس", name_en: "Belbeis", slug: "belbeis", created_at: "2024-01-01" },
+  { id: 70, governorate_id: 8, name_ar: "منيا القمح", name_en: "Minya El-Qamh", slug: "minya-el-qamh", created_at: "2024-01-01" },
+  { id: 71, governorate_id: 8, name_ar: "فاقوس", name_en: "Faqous", slug: "faqous", created_at: "2024-01-01" },
+  { id: 72, governorate_id: 8, name_ar: "أبو حماد", name_en: "Abu Hammad", slug: "abu-hammad", created_at: "2024-01-01" },
+  { id: 73, governorate_id: 8, name_ar: "ديرب نجم", name_en: "Deyarb Negm", slug: "deyarb-negm", created_at: "2024-01-01" },
+
+  // Beheira (id: 9)
+  { id: 74, governorate_id: 9, name_ar: "دمنهور", name_en: "Damanhour", slug: "damanhour", created_at: "2024-01-01" },
+  { id: 75, governorate_id: 9, name_ar: "كفر الدوار", name_en: "Kafr El-Dawar", slug: "kafr-el-dawar", created_at: "2024-01-01" },
+  { id: 76, governorate_id: 9, name_ar: "كوم حمادة", name_en: "Kom Hamada", slug: "kom-hamada", created_at: "2024-01-01" },
+  { id: 77, governorate_id: 9, name_ar: "إيتاي البارود", name_en: "Itay El-Baroud", slug: "itay-el-baroud", created_at: "2024-01-01" },
+  { id: 78, governorate_id: 9, name_ar: "أبو حمص", name_en: "Abu Hummus", slug: "abu-hummus", created_at: "2024-01-01" },
+  { id: 79, governorate_id: 9, name_ar: "رشيد", name_en: "Rosetta", slug: "rosetta", created_at: "2024-01-01" },
+  { id: 80, governorate_id: 9, name_ar: "وادي النطرون", name_en: "Wadi El-Natrun", slug: "wadi-el-natrun", created_at: "2024-01-01" },
+
+  // Damietta (id: 10)
+  { id: 81, governorate_id: 10, name_ar: "دمياط", name_en: "Damietta", slug: "damietta", created_at: "2024-01-01" },
+  { id: 82, governorate_id: 10, name_ar: "دمياط الجديدة", name_en: "New Damietta", slug: "new-damietta", created_at: "2024-01-01" },
+  { id: 83, governorate_id: 10, name_ar: "رأس البر", name_en: "Ras El-Bar", slug: "ras-el-bar", created_at: "2024-01-01" },
+  { id: 84, governorate_id: 10, name_ar: "فارسكور", name_en: "Faraskur", slug: "faraskur", created_at: "2024-01-01" },
+  { id: 85, governorate_id: 10, name_ar: "الزرقا", name_en: "Al-Zarqa", slug: "al-zarqa", created_at: "2024-01-01" },
+
+  // Port Said (id: 11)
+  { id: 86, governorate_id: 11, name_ar: "بورفؤاد", name_en: "Port Fouad", slug: "port-fouad", created_at: "2024-01-01" },
+  { id: 87, governorate_id: 11, name_ar: "حي الشرق", name_en: "Sharq District", slug: "sharq-district", created_at: "2024-01-01" },
+  { id: 88, governorate_id: 11, name_ar: "حي العرب", name_en: "Arab District", slug: "arab-district", created_at: "2024-01-01" },
+  { id: 89, governorate_id: 11, name_ar: "حي المناخ", name_en: "Manakh District", slug: "manakh-district", created_at: "2024-01-01" },
+
+  // Ismailia (id: 12)
+  { id: 90, governorate_id: 12, name_ar: "الإسماعيلية", name_en: "Ismailia", slug: "ismailia", created_at: "2024-01-01" },
+  { id: 91, governorate_id: 12, name_ar: "التل الكبير", name_en: "El-Tell El-Kebir", slug: "el-tell-el-kebir", created_at: "2024-01-01" },
+  { id: 92, governorate_id: 12, name_ar: "فايد", name_en: "Fayed", slug: "fayed", created_at: "2024-01-01" },
+  { id: 93, governorate_id: 12, name_ar: "القنطرة غرب", name_en: "Qantara West", slug: "qantara-west", created_at: "2024-01-01" },
+
+  // Suez (id: 13)
+  { id: 94, governorate_id: 13, name_ar: "حي السويس", name_en: "Suez District", slug: "suez-district", created_at: "2024-01-01" },
+  { id: 95, governorate_id: 13, name_ar: "حي الأربعين", name_en: "Arbaeen District", slug: "arbaeen-district", created_at: "2024-01-01" },
+  { id: 96, governorate_id: 13, name_ar: "حي عتاقة", name_en: "Attaka District", slug: "attaka-district", created_at: "2024-01-01" },
+  { id: 97, governorate_id: 13, name_ar: "حي فيصل", name_en: "Faisal District", slug: "faisal-district", created_at: "2024-01-01" },
+
+  // Kafr El-Sheikh (id: 14)
+  { id: 98, governorate_id: 14, name_ar: "كفر الشيخ", name_en: "Kafr El-Sheikh", slug: "kafr-el-sheikh", created_at: "2024-01-01" },
+  { id: 99, governorate_id: 14, name_ar: "دسوق", name_en: "Desouk", slug: "desouk", created_at: "2024-01-01" },
+  { id: 100, governorate_id: 14, name_ar: "قلين", name_en: "Qallin", slug: "qallin", created_at: "2024-01-01" },
+  { id: 101, governorate_id: 14, name_ar: "سيدي سالم", name_en: "Sidi Salem", slug: "sidi-salem", created_at: "2024-01-01" },
+  { id: 102, governorate_id: 14, name_ar: "بلطيم", name_en: "Baltim", slug: "baltim", created_at: "2024-01-01" },
+
+  // Beni Suef (id: 15)
+  { id: 103, governorate_id: 15, name_ar: "بني سويف", name_en: "Beni Suef", slug: "beni-suef", created_at: "2024-01-01" },
+  { id: 104, governorate_id: 15, name_ar: "ببا", name_en: "Biba", slug: "biba", created_at: "2024-01-01" },
+  { id: 105, governorate_id: 15, name_ar: "ناصر", name_en: "Nasser", slug: "nasser", created_at: "2024-01-01" },
+  { id: 106, governorate_id: 15, name_ar: "الفشن", name_en: "Al-Fashn", slug: "al-fashn", created_at: "2024-01-01" },
+  { id: 107, governorate_id: 15, name_ar: "سمسطا", name_en: "Samasta", slug: "samasta", created_at: "2024-01-01" },
+  { id: 108, governorate_id: 15, name_ar: "الواسطى", name_en: "Al-Wasta", slug: "al-wasta", created_at: "2024-01-01" },
+
+  // Minya (id: 16)
+  { id: 109, governorate_id: 16, name_ar: "المنيا", name_en: "Minya", slug: "minya", created_at: "2024-01-01" },
+  { id: 110, governorate_id: 16, name_ar: "ملوي", name_en: "Mallawi", slug: "mallawi", created_at: "2024-01-01" },
+  { id: 111, governorate_id: 16, name_ar: "بني مزار", name_en: "Beni Mazar", slug: "basi-mazar", created_at: "2024-01-01" },
+  { id: 112, governorate_id: 16, name_ar: "مغاغة", name_en: "Maghagha", slug: "maghagha", created_at: "2024-01-01" },
+  { id: 113, governorate_id: 16, name_ar: "سمالوط", name_en: "Samalut", slug: "samalut", created_at: "2024-01-01" },
+  { id: 114, governorate_id: 16, name_ar: "أبو قرقاص", name_en: "Abu Qurqas", slug: "abu-qurqas", created_at: "2024-01-01" },
+
+  // Faiyum (id: 17)
   { id: 1, governorate_id: 17, name_ar: "الفيوم", name_en: "Faiyum", slug: "faiyum", created_at: "2024-01-01" },
   { id: 2, governorate_id: 17, name_ar: "المسلة", name_en: "Al-Masala", slug: "al-masala", created_at: "2024-01-01" },
   { id: 3, governorate_id: 17, name_ar: "دلة", name_en: "Dala", slug: "dala", created_at: "2024-01-01" },
@@ -13,6 +178,66 @@ export const CITIES: City[] = [
   { id: 6, governorate_id: 17, name_ar: "البحاري", name_en: "Al-Bahari", slug: "al-bahari", created_at: "2024-01-01" },
   { id: 7, governorate_id: 17, name_ar: "التسعاوى", name_en: "Al-Tasaawi", slug: "al-tasaawi", created_at: "2024-01-01" },
   { id: 8, governorate_id: 17, name_ar: "لطف الله", name_en: "Lotf Allah", slug: "lotf-allah", created_at: "2024-01-01" },
+  { id: 115, governorate_id: 17, name_ar: "إطسا", name_en: "Itsa", slug: "itsa", created_at: "2024-01-01" },
+  { id: 116, governorate_id: 17, name_ar: "طامية", name_en: "Tamia", slug: "tamia", created_at: "2024-01-01" },
+  { id: 117, governorate_id: 17, name_ar: "يوسف الصديق", name_en: "Youssef El-Seddik", slug: "youssef-el-seddik", created_at: "2024-01-01" },
+
+  // Asyut (id: 18)
+  { id: 118, governorate_id: 18, name_ar: "أسيوط", name_en: "Asyut", slug: "asyut", created_at: "2024-01-01" },
+  { id: 119, governorate_id: 18, name_ar: "ديروط", name_en: "Dairut", slug: "dairut", created_at: "2024-01-01" },
+  { id: 120, governorate_id: 18, name_ar: "منفلوط", name_en: "Manfalut", slug: "manfalut", created_at: "2024-01-01" },
+  { id: 121, governorate_id: 18, name_ar: "القوصية", name_en: "Al-Qusiya", slug: "al-qusiya", created_at: "2024-01-01" },
+  { id: 122, governorate_id: 18, name_ar: "أبو تيج", name_en: "Abu Tig", slug: "abu-tig", created_at: "2024-01-01" },
+  { id: 123, governorate_id: 18, name_ar: "صدفا", name_en: "Sedfa", slug: "sedfa", created_at: "2024-01-01" },
+
+  // Sohag (id: 19)
+  { id: 124, governorate_id: 19, name_ar: "سوهاج", name_en: "Sohag", slug: "sohag", created_at: "2024-01-01" },
+  { id: 125, governorate_id: 19, name_ar: "طما", name_en: "Tama", slug: "tama", created_at: "2024-01-01" },
+  { id: 126, governorate_id: 19, name_ar: "طهطا", name_en: "Tahta", slug: "tahta", created_at: "2024-01-01" },
+  { id: 127, governorate_id: 19, name_ar: "المراغة", name_en: "Al-Maragha", slug: "al-maragha", created_at: "2024-01-01" },
+  { id: 128, governorate_id: 19, name_ar: "جرجا", name_en: "Girga", slug: "girga", created_at: "2024-01-01" },
+  { id: 129, governorate_id: 19, name_ar: "البلينا", name_en: "Al-Balyana", slug: "al-balyana", created_at: "2024-01-01" },
+
+  // Qena (id: 20)
+  { id: 130, governorate_id: 20, name_ar: "قنا", name_en: "Qena", slug: "qena", created_at: "2024-01-01" },
+  { id: 131, governorate_id: 20, name_ar: "نجع حمادي", name_en: "Nag Hammadi", slug: "nag-hammadi", created_at: "2024-01-01" },
+  { id: 132, governorate_id: 20, name_ar: "دشنا", name_en: "Dishna", slug: "dishna", created_at: "2024-01-01" },
+  { id: 133, governorate_id: 20, name_ar: "قوص", name_en: "Qus", slug: "qus", created_at: "2024-01-01" },
+  { id: 134, governorate_id: 20, name_ar: "نقادة", name_en: "Naqada", slug: "naqada", created_at: "2024-01-01" },
+
+  // Luxor (id: 21)
+  { id: 135, governorate_id: 21, name_ar: "الأقصر", name_en: "Luxor", slug: "luxor", created_at: "2024-01-01" },
+  { id: 136, governorate_id: 21, name_ar: "إسنا", name_en: "Esna", slug: "esna", created_at: "2024-01-01" },
+  { id: 137, governorate_id: 21, name_ar: "أرمنت", name_en: "Armant", slug: "armant", created_at: "2024-01-01" },
+
+  // Aswan (id: 22)
+  { id: 138, governorate_id: 22, name_ar: "أسوان", name_en: "Aswan", slug: "aswan", created_at: "2024-01-01" },
+  { id: 139, governorate_id: 22, name_ar: "كوم أمبو", name_en: "Kom Ombo", slug: "kom-ombo", created_at: "2024-01-01" },
+  { id: 140, governorate_id: 22, name_ar: "إدفو", name_en: "Edfu", slug: "edfu", created_at: "2024-01-01" },
+
+  // Red Sea (id: 23)
+  { id: 141, governorate_id: 23, name_ar: "الغردقة", name_en: "Hurghada", slug: "hurghada", created_at: "2024-01-01" },
+  { id: 142, governorate_id: 23, name_ar: "سفاجا", name_en: "Safaga", slug: "safaga", created_at: "2024-01-01" },
+  { id: 143, governorate_id: 23, name_ar: "القصير", name_en: "Al-Qusayr", slug: "al-qusayr", created_at: "2024-01-01" },
+  { id: 144, governorate_id: 23, name_ar: "مرسى علم", name_en: "Marsa Alam", slug: "marsa-alam", created_at: "2024-01-01" },
+
+  // New Valley (id: 24)
+  { id: 145, governorate_id: 24, name_ar: "الخارجة", name_en: "Al-Kharga", slug: "al-kharga", created_at: "2024-01-01" },
+  { id: 146, governorate_id: 24, name_ar: "الداخلة", name_en: "Al-Dakhla", slug: "al-dakhla", created_at: "2024-01-01" },
+
+  // Matrouh (id: 25)
+  { id: 147, governorate_id: 25, name_ar: "مرسى مطروح", name_en: "Marsa Matrouh", slug: "marsa-matrouh", created_at: "2024-01-01" },
+  { id: 148, governorate_id: 25, name_ar: "العلمين", name_en: "Al-Alamein", slug: "al-alamein", created_at: "2024-01-01" },
+  { id: 149, governorate_id: 25, name_ar: "سيوة", name_en: "Siwa", slug: "siwa", created_at: "2024-01-01" },
+
+  // North Sinai (id: 26)
+  { id: 150, governorate_id: 26, name_ar: "العريش", name_en: "Al-Arish", slug: "al-arish", created_at: "2024-01-01" },
+  { id: 151, governorate_id: 26, name_ar: "الشيخ زويد", name_en: "Sheikh Zuweid", slug: "sheikh-zuweid", created_at: "2024-01-01" },
+
+  // South Sinai (id: 27)
+  { id: 152, governorate_id: 27, name_ar: "شرم الشيخ", name_en: "Sharm El-Sheikh", slug: "sharm-el-sheikh", created_at: "2024-01-01" },
+  { id: 153, governorate_id: 27, name_ar: "طور سيناء", name_en: "Tor Sinai", slug: "tor-sinai", created_at: "2024-01-01" },
+  { id: 154, governorate_id: 27, name_ar: "دهب", name_en: "Dahab", slug: "dahab", created_at: "2024-01-01" },
 ];
 
 export const MOCK_DOCTORS: Doctor[] = [
@@ -477,6 +702,6 @@ export const MOCK_STATS: AdminStats = {
   pendingApplications: 0,
   approvedApplications: 0,
   rejectedApplications: 0,
-  totalGovernorates: 1,
-  totalCities: 8,
+  totalGovernorates: 27,
+  totalCities: 154,
 };

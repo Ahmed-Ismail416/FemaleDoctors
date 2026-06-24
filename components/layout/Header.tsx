@@ -22,7 +22,7 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+            <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
               <Heart className="w-5 h-5 text-white fill-white" />
             </div>
             <div className="hidden sm:block">
@@ -48,7 +48,7 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <Link
               href="/register"
-              className="hidden sm:inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:shadow-md hover:shadow-pink-200 transition-all"
+              className="hidden sm:inline-flex items-center gap-2 bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-purple-700 transition-all"
             >
               <Heart className="w-4 h-4" />
               انضمي للدليل

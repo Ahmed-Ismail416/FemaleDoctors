@@ -36,7 +36,7 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
               className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-200 to-pink-200 text-purple-700 font-bold text-lg sm:text-xl">
+            <div className="w-full h-full flex items-center justify-center bg-purple-100 text-purple-700 font-bold text-lg sm:text-xl">
               {getInitials(doctor.name)}
             </div>
           )}

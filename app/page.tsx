@@ -66,11 +66,9 @@ export default async function HomePage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/veiled_doctors.png')" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-950/60 via-purple-900/50 to-pink-900/40" />
+        <div className="absolute inset-0 bg-black/60" />
 
-        {/* Decorative orbs */}
-        <div className="absolute top-20 right-20 w-64 h-64 rounded-full bg-pink-400/10 blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 rounded-full bg-purple-400/10 blur-3xl animate-pulse delay-1000" />
+        {/* Decorative orbs - subtle neutral light */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
 
         {/* Grid pattern overlay */}
@@ -94,7 +92,7 @@ export default async function HomePage() {
             {/* Heading */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-6 animate-fade-in">
               دليل{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-pink-100">
+              <span className="text-pink-300">
                 طبيبات مصر
               </span>
               <br />
@@ -147,7 +145,7 @@ export default async function HomePage() {
       />
 
       {/* Featured Doctors */}
-      <section className="py-16 bg-gradient-to-b from-white to-pink-50">
+      <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-10">
             <div>

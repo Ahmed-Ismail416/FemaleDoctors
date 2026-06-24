@@ -52,6 +52,7 @@ model Doctor {
   bio            String?
   map_url        String?
   image_url      String?
+  working_hours  Json?
   verified       Boolean  @default(false)
   featured       Boolean  @default(false)
   created_at     DateTime @default(now())
@@ -80,6 +81,7 @@ model Application {
   map_url        String?
   image_url      String?
   license_url    String?
+  working_hours  Json?
   status         ApplicationStatus @default(pending)
   notes          String?
   created_at     DateTime          @default(now())

@@ -37,6 +37,30 @@ export default function RegisterPage() {
     map_url: "",
   });
 
+  const [workingHours, setWorkingHours] = useState<Record<string, { active: boolean; from: string; to: string }>>({
+    saturday: { active: false, from: "10:00 صباحاً", to: "06:00 مساءً" },
+    sunday: { active: false, from: "10:00 صباحاً", to: "06:00 مساءً" },
+    monday: { active: false, from: "10:00 صباحاً", to: "06:00 مساءً" },
+    tuesday: { active: false, from: "10:00 صباحاً", to: "06:00 مساءً" },
+    wednesday: { active: false, from: "10:00 صباحاً", to: "06:00 مساءً" },
+    thursday: { active: false, from: "10:00 صباحاً", to: "06:00 مساءً" },
+    friday: { active: false, from: "10:00 صباحاً", to: "06:00 مساءً" },
+  });
+
+  const handleDayToggle = (dayKey: string) => {
+    setWorkingHours((prev) => ({
+      ...prev,
+      [dayKey]: { ...prev[dayKey], active: !prev[dayKey].active },
+    }));
+  };
+
+  const handleTimeChange = (dayKey: string, field: "from" | "to", value: string) => {
+    setWorkingHours((prev) => ({
+      ...prev,
+      [dayKey]: { ...prev[dayKey], [field]: value },
+    }));
+  };
+
   useEffect(() => {
     async function loadLocations() {
       const [govRes, cityRes] = await Promise.all([
@@ -76,6 +100,17 @@ export default function RegisterPage() {
       alert("يجب تأكيد أنك طبيبة أنثى للمتابعة");
       return;
     }
+
+    // Validate quadruple name (ignore doctor prefixes)
+    const cleanName = formData.doctor_name
+      .replace(/^(الاستاذة\s+الدكتورة|الأستاذة\s+الدكتورة|أستاذة\s+دكتورة|دكتورة|دكتور|أ\.د\.|أ\.د|د\.\s*|د\/\s*)/i, "")
+      .trim();
+    const nameParts = cleanName.split(/\s+/).filter(Boolean);
+    if (nameParts.length < 4) {
+      alert("يرجى إدخال الاسم رباعياً للتسجيل (مثال: فاطمة محمد أحمد علي)");
+      return;
+    }
+
     setStatus("loading");
 
     try {
@@ -109,6 +144,15 @@ export default function RegisterPage() {
         specialty: formData.specialty,
         bio: formData.bio || null,
         map_url: formData.map_url || null,
+        working_hours: (() => {
+          const activeHours: Record<string, { from: string; to: string }> = {};
+          Object.entries(workingHours).forEach(([day, data]) => {
+            if (data.active) {
+              activeHours[day] = { from: data.from, to: data.to };
+            }
+          });
+          return Object.keys(activeHours).length > 0 ? activeHours : null;
+        })(),
         image_url: image_url || null,
         license_url: license_url || null,
       };
@@ -210,15 +254,16 @@ export default function RegisterPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  الاسم الكامل <span className="text-red-500">*</span>
+                  الاسم الكامل (الاسم الرباعي) <span className="text-red-500">*</span>
                 </label>
                 <Input
                   id="doctor_name"
-                  placeholder="د. الاسم الأول الاسم الأخير"
+                  placeholder="مثال: د. فاطمة محمد أحمد علي"
                   value={formData.doctor_name}
                   onChange={(e) => handleChange("doctor_name", e.target.value)}
                   required
                 />
+                <p className="text-xs text-gray-400 mt-1">يجب إدخال الاسم رباعياً للتسجيل. سيتم عرض الاسم ثلاثياً فقط للعامة.</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -382,6 +427,71 @@ export default function RegisterPage() {
                   onChange={(e) => handleChange("bio", e.target.value)}
                 />
                 <p className="text-xs text-gray-400 mt-1">هذا النص سيظهر في ملفك الشخصي</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  أيام وساعات العمل <span className="text-xs text-gray-400 font-normal">(اختياري - حددي الأيام التي تعملين بها وساعات العمل لكل يوم)</span>
+                </label>
+                
+                <div className="space-y-3 bg-purple-50/20 border border-purple-100/75 rounded-xl p-4">
+                  {[
+                    { key: "saturday", label: "السبت" },
+                    { key: "sunday", label: "الأحد" },
+                    { key: "monday", label: "الإثنين" },
+                    { key: "tuesday", label: "الثلاثاء" },
+                    { key: "wednesday", label: "الأربعاء" },
+                    { key: "thursday", label: "الخميس" },
+                    { key: "friday", label: "الجمعة" },
+                  ].map((day) => {
+                    const dayData = workingHours[day.key];
+                    return (
+                      <div key={day.key} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 last:pb-0 border-b border-purple-100/50 last:border-0">
+                        {/* Day Toggle Checkbox */}
+                        <div
+                          className="flex items-center gap-2 cursor-pointer select-none"
+                          onClick={() => handleDayToggle(day.key)}
+                        >
+                          <div
+                            className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${
+                              dayData.active
+                                ? "bg-purple-600 border-purple-600 text-white"
+                                : "border-gray-300 bg-white"
+                            }`}
+                          >
+                            {dayData.active && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+                          </div>
+                          <span className={`text-sm font-semibold ${dayData.active ? "text-purple-700" : "text-gray-600"}`}>
+                            {day.label}
+                          </span>
+                        </div>
+
+                        {/* From & To Time Fields */}
+                        {dayData.active ? (
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-500">من:</span>
+                            <Input
+                              type="text"
+                              placeholder="10:00 صباحاً"
+                              className="w-32 h-9 text-xs"
+                              value={dayData.from}
+                              onChange={(e) => handleTimeChange(day.key, "from", e.target.value)}
+                            />
+                            <span className="text-xs text-gray-500">إلى:</span>
+                            <Input
+                              type="text"
+                              placeholder="06:00 مساءً"
+                              className="w-32 h-9 text-xs"
+                              value={dayData.to}
+                              onChange={(e) => handleTimeChange(day.key, "to", e.target.value)}
+                            />
+                          </div>
+                        ) : (
+                          <span className="text-xs text-gray-400 font-medium">مغلق</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

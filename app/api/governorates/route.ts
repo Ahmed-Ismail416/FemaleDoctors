@@ -27,3 +27,21 @@ export async function DELETE(request: Request) {
   await prisma.governorate.delete({ where: { id: parseInt(id) } });
   return NextResponse.json({ success: true });
 }
+
+export async function PUT(request: Request) {
+  const body = await request.json();
+  const { id, name_ar, name_en, slug } = body;
+  if (!id) return NextResponse.json({ error: "ID مطلوب" }, { status: 400 });
+
+  const governorate = await prisma.governorate.update({
+    where: { id: parseInt(id) },
+    data: {
+      name_ar,
+      name_en: name_en || undefined,
+      slug: slug || undefined,
+    },
+  });
+
+  return NextResponse.json(governorate);
+}
+

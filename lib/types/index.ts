@@ -33,6 +33,7 @@ export interface Doctor {
   bio?: string;
   map_url?: string;
   image_url?: string;
+  working_hours?: any;
   verified: boolean;
   featured: boolean;
   created_at: string | Date;
@@ -54,6 +55,7 @@ export interface Application {
   map_url?: string;
   image_url?: string;
   license_url?: string;
+  working_hours?: any;
   status: "pending" | "approved" | "rejected";
   notes?: string;
   created_at: string | Date;
@@ -76,6 +78,7 @@ export interface DoctorRegistrationFormData {
   specialty: string;
   bio?: string;
   map_url?: string;
+  working_hours?: any;
   confirm_female: boolean;
 }
 

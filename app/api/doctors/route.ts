@@ -64,6 +64,7 @@ export async function POST(request: Request) {
       bio: body.bio || null,
       map_url: body.map_url || null,
       image_url: body.image_url || null,
+      working_hours: body.working_hours || null,
       verified: body.verified ?? false,
       featured: false,
     },

@@ -42,6 +42,7 @@ export async function POST(request: Request) {
       map_url: body.map_url || null,
       image_url: body.image_url || null,
       license_url: body.license_url || null,
+      working_hours: body.working_hours || null,
       status: "pending",
     },
   });
@@ -73,6 +74,7 @@ export async function PUT(request: Request) {
         bio: application.bio,
         map_url: application.map_url,
         image_url: application.image_url,
+        working_hours: application.working_hours !== null ? (application.working_hours as any) : undefined,
         verified: true,
         featured: false,
       },

@@ -11,6 +11,10 @@ export default function AdminGovernoratesPage() {
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [newName, setNewName] = useState("");
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editNameAr, setEditNameAr] = useState("");
+  const [editNameEn, setEditNameEn] = useState("");
+  const [editSlug, setEditSlug] = useState("");
 
   useEffect(() => {
     async function loadGovernorates() {
@@ -36,6 +40,29 @@ export default function AdminGovernoratesPage() {
       setShowAdd(false);
     } else {
       alert("Error adding governorate");
+    }
+  };
+
+  const handleUpdate = async (id: number) => {
+    if (!editNameAr.trim()) return;
+    const res = await fetch("/api/governorates", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id,
+        name_ar: editNameAr,
+        name_en: editNameEn || editNameAr,
+        slug: editSlug || editNameAr.replace(/\s+/g, "-"),
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setGovernorates((prev) =>
+        prev.map((g) => (g.id === id ? data : g))
+      );
+      setEditingId(null);
+    } else {
+      alert("Error updating governorate");
     }
   };
 
@@ -104,28 +131,90 @@ export default function AdminGovernoratesPage() {
                 <td colSpan={5} className="text-center py-12 text-gray-400">لا توجد محافظات</td>
               </tr>
             ) : (
-              governorates.map((gov) => (
-                <tr key={gov.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="p-4 text-gray-500 text-xs">{gov.id}</td>
-                  <td className="p-4 font-medium text-gray-900">{gov.name_ar}</td>
-                  <td className="p-4 text-gray-600">{gov.name_en}</td>
-                  <td className="p-4 text-gray-400 font-mono text-xs">{gov.slug}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
-                      <button className="p-1.5 rounded-lg text-purple-500 hover:bg-purple-50" title="تعديل">
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(gov.id)}
-                        className="p-1.5 rounded-lg text-red-400 hover:bg-red-50"
-                        title="حذف"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+              governorates.map((gov) => {
+                const isEditing = editingId === gov.id;
+                return (
+                  <tr key={gov.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="p-4 text-gray-500 text-xs">{gov.id}</td>
+                    <td className="p-4 font-medium text-gray-900">
+                      {isEditing ? (
+                        <Input
+                          value={editNameAr}
+                          onChange={(e) => setEditNameAr(e.target.value)}
+                          className="h-8 py-1"
+                        />
+                      ) : (
+                        gov.name_ar
+                      )}
+                    </td>
+                    <td className="p-4 text-gray-600">
+                      {isEditing ? (
+                        <Input
+                          value={editNameEn}
+                          onChange={(e) => setEditNameEn(e.target.value)}
+                          className="h-8 py-1"
+                        />
+                      ) : (
+                        gov.name_en
+                      )}
+                    </td>
+                    <td className="p-4 text-gray-400 font-mono text-xs">
+                      {isEditing ? (
+                        <Input
+                          value={editSlug}
+                          onChange={(e) => setEditSlug(e.target.value)}
+                          className="h-8 py-1"
+                        />
+                      ) : (
+                        gov.slug
+                      )}
+                    </td>
+                    <td className="p-4">
+                      {isEditing ? (
+                        <div className="flex items-center gap-1.5">
+                          <Button
+                            size="sm"
+                            className="h-7 px-2.5 bg-green-600 hover:bg-green-700 text-white text-xs"
+                            onClick={() => handleUpdate(gov.id)}
+                          >
+                            حفظ
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 px-2.5 text-xs"
+                            onClick={() => setEditingId(null)}
+                          >
+                            إلغاء
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setEditingId(gov.id);
+                              setEditNameAr(gov.name_ar);
+                              setEditNameEn(gov.name_en);
+                              setEditSlug(gov.slug);
+                            }}
+                            className="p-1.5 rounded-lg text-purple-500 hover:bg-purple-50"
+                            title="تعديل"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(gov.id)}
+                            className="p-1.5 rounded-lg text-red-400 hover:bg-red-50"
+                            title="حذف"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

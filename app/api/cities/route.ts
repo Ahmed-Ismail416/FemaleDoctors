@@ -32,3 +32,22 @@ export async function DELETE(request: Request) {
   await prisma.city.delete({ where: { id: parseInt(id) } });
   return NextResponse.json({ success: true });
 }
+
+export async function PUT(request: Request) {
+  const body = await request.json();
+  const { id, name_ar, name_en, slug, governorate_id } = body;
+  if (!id) return NextResponse.json({ error: "ID مطلوب" }, { status: 400 });
+
+  const city = await prisma.city.update({
+    where: { id: parseInt(id) },
+    data: {
+      name_ar,
+      name_en: name_en || undefined,
+      slug: slug || undefined,
+      governorate_id: governorate_id ? Number(governorate_id) : undefined,
+    },
+  });
+
+  return NextResponse.json(city);
+}
+

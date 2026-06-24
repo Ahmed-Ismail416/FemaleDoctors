@@ -33,3 +33,62 @@ export function slugify(str: string): string {
     .replace(/\s+/g, "-")
     .replace(/[^\w-]+/g, "");
 }
+
+export function getTripleName(fullName: string): string {
+  if (!fullName) return "";
+  
+  const cleanStr = fullName.trim();
+  
+  // Match prefix like 'د. ', 'دكتورة ', 'د/ ', 'أ.د. ' etc.
+  const prefixMatch = cleanStr.match(/^(أ\.?\s*د\.?\s+|د\.\s*|دكتورة\s+|د\/\s*)/i);
+  let prefix = "";
+  let namePart = cleanStr;
+  
+  if (prefixMatch) {
+    prefix = prefixMatch[0];
+    namePart = cleanStr.substring(prefix.length).trim();
+  }
+  
+  const parts = namePart.split(/\s+/).filter(Boolean);
+  if (parts.length <= 3) {
+    return cleanStr;
+  }
+  
+  const tripleName = parts.slice(0, 3).join(" ");
+  return `${prefix}${tripleName}`.trim();
+}
+
+export const DAYS_OF_WEEK = [
+  { key: "saturday", label: "السبت" },
+  { key: "sunday", label: "الأحد" },
+  { key: "monday", label: "الإثنين" },
+  { key: "tuesday", label: "الثلاثاء" },
+  { key: "wednesday", label: "الأربعاء" },
+  { key: "thursday", label: "الخميس" },
+  { key: "friday", label: "الجمعة" },
+] as const;
+
+export function formatWorkingDaysSummary(workingHours: any): string {
+  if (!workingHours) return "";
+  let hoursObj = workingHours;
+  if (typeof workingHours === "string") {
+    try {
+      hoursObj = JSON.parse(workingHours);
+    } catch {
+      return "";
+    }
+  }
+  
+  if (!hoursObj || typeof hoursObj !== "object") return "";
+
+  const activeDays = DAYS_OF_WEEK.filter(day => {
+    const dayData = hoursObj[day.key];
+    // Check if the day is checked/active and has from/to hours
+    return dayData && (dayData.active || (dayData.from && dayData.to));
+  });
+
+  if (activeDays.length === 0) return "";
+  
+  const dayNames = activeDays.map(d => d.label);
+  return `مواعيد العمل: ${dayNames.join("، ")}`;
+}

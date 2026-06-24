@@ -3,11 +3,16 @@
 import Link from "next/link";
 import { useState, lazy, Suspense } from "react";
 import { Menu, X, Heart } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const MobileMenu = lazy(() => import("./MobileMenu"));
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  const hideHeader = pathname === "/developer" || pathname?.startsWith("/admin");
+  if (hideHeader) return null;
 
   const navLinks = [
     { href: "/", label: "الرئيسية" },

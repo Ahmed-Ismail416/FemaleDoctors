@@ -15,6 +15,11 @@ export default function AdminCitiesPage() {
   const [newName, setNewName] = useState("");
   const [newGov, setNewGov] = useState("");
   const [filterGov, setFilterGov] = useState("");
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editNameAr, setEditNameAr] = useState("");
+  const [editNameEn, setEditNameEn] = useState("");
+  const [editSlug, setEditSlug] = useState("");
+  const [editGovId, setEditGovId] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -50,6 +55,30 @@ export default function AdminCitiesPage() {
       setShowAdd(false);
     } else {
       alert("Error adding city");
+    }
+  };
+
+  const handleUpdate = async (id: number) => {
+    if (!editNameAr.trim() || !editGovId) return;
+    const res = await fetch("/api/cities", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id,
+        name_ar: editNameAr,
+        name_en: editNameEn || editNameAr,
+        slug: editSlug || editNameAr.replace(/\s+/g, "-"),
+        governorate_id: parseInt(editGovId),
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setCities((prev) =>
+        prev.map((c) => (c.id === id ? data : c))
+      );
+      setEditingId(null);
+    } else {
+      alert("Error updating city");
     }
   };
 
@@ -143,24 +172,90 @@ export default function AdminCitiesPage() {
             ) : (
               filtered.map((city) => {
                 const gov = governorates.find((g) => g.id === city.governorate_id);
+                const isEditing = editingId === city.id;
                 return (
                   <tr key={city.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="p-4 font-medium text-gray-900">{city.name_ar}</td>
-                    <td className="p-4 text-gray-600">{gov?.name_ar}</td>
-                    <td className="p-4 text-gray-400 font-mono text-xs">{city.slug}</td>
+                    <td className="p-4 font-medium text-gray-900">
+                      {isEditing ? (
+                        <Input
+                          value={editNameAr}
+                          onChange={(e) => setEditNameAr(e.target.value)}
+                          className="h-8 py-1"
+                        />
+                      ) : (
+                        city.name_ar
+                      )}
+                    </td>
+                    <td className="p-4 text-gray-600">
+                      {isEditing ? (
+                        <Select value={editGovId} onValueChange={setEditGovId}>
+                          <SelectTrigger className="h-8 py-1 w-40">
+                            <SelectValue placeholder="اختر المحافظة" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {governorates.map((g) => (
+                              <SelectItem key={g.id} value={String(g.id)}>{g.name_ar}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        gov?.name_ar
+                      )}
+                    </td>
+                    <td className="p-4 text-gray-400 font-mono text-xs">
+                      {isEditing ? (
+                        <Input
+                          value={editSlug}
+                          onChange={(e) => setEditSlug(e.target.value)}
+                          className="h-8 py-1"
+                        />
+                      ) : (
+                        city.slug
+                      )}
+                    </td>
                     <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <button className="p-1.5 rounded-lg text-purple-500 hover:bg-purple-50" title="تعديل">
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(city.id)}
-                          className="p-1.5 rounded-lg text-red-400 hover:bg-red-50"
-                          title="حذف"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
+                      {isEditing ? (
+                        <div className="flex items-center gap-1.5">
+                          <Button
+                            size="sm"
+                            className="h-7 px-2.5 bg-green-600 hover:bg-green-700 text-white text-xs"
+                            onClick={() => handleUpdate(city.id)}
+                          >
+                            حفظ
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 px-2.5 text-xs"
+                            onClick={() => setEditingId(null)}
+                          >
+                            إلغاء
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setEditingId(city.id);
+                              setEditNameAr(city.name_ar);
+                              setEditNameEn(city.name_en || city.name_ar);
+                              setEditSlug(city.slug);
+                              setEditGovId(String(city.governorate_id));
+                            }}
+                            className="p-1.5 rounded-lg text-purple-500 hover:bg-purple-50"
+                            title="تعديل"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(city.id)}
+                            className="p-1.5 rounded-lg text-red-400 hover:bg-red-50"
+                            title="حذف"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 );

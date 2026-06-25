@@ -411,6 +411,67 @@ export default async function DoctorProfilePage({ params }: Props) {
                     </div>
                   ))}
                 </div>
+
+                {/* Daily Working Hours Table */}
+                {doctor.working_hours && (
+                  (() => {
+                    let hoursObj: any = doctor.working_hours;
+                    if (typeof hoursObj === "string") {
+                      try { hoursObj = JSON.parse(hoursObj); } catch { hoursObj = null; }
+                    }
+                    if (!hoursObj || typeof hoursObj !== "object") return null;
+
+                    const days = [
+                      { key: "saturday", label: "السبت" },
+                      { key: "sunday", label: "الأحد" },
+                      { key: "monday", label: "الإثنين" },
+                      { key: "tuesday", label: "الثلاثاء" },
+                      { key: "wednesday", label: "الأربعاء" },
+                      { key: "thursday", label: "الخميس" },
+                      { key: "friday", label: "الجمعة" },
+                    ];
+
+                    const activeDays = days.filter(d => {
+                      const item = hoursObj[d.key];
+                      return item && (item.active || (item.from && item.to));
+                    });
+
+                    if (activeDays.length === 0) return null;
+
+                    return (
+                      <div className="mt-5 border-t border-purple-100 pt-4">
+                        <h3 className="text-sm font-bold text-purple-700 mb-3 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-pink-500" />
+                          أوقات العمل بالتفصيل:
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                          {days.map((day) => {
+                            const item = hoursObj[day.key];
+                            const isActive = item && (item.active || (item.from && item.to));
+                            return (
+                              <div 
+                                key={day.key} 
+                                className={`flex justify-between items-center px-3 py-2 rounded-xl text-xs ${
+                                  isActive 
+                                    ? "bg-pink-50/50 border border-pink-100 text-gray-800" 
+                                    : "bg-gray-50 text-gray-400 line-through decoration-gray-300"
+                                }`}
+                              >
+                                <span className="font-bold">{day.label}</span>
+                                <span>
+                                  {isActive 
+                                    ? `من ${item.from || ""} إلى ${item.to || ""}` 
+                                    : "مغلق"
+                                  }
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()
+                )}
               </div>
 
               {/* Map */}

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Phone, MapPin, MessageCircle, Map, ChevronLeft } from "lucide-react";
+import { Phone, MapPin, MessageCircle, Map, ChevronLeft, Clock } from "lucide-react";
 import { Doctor } from "@/lib/types";
-import { buildWhatsAppLink } from "@/lib/utils";
+import { buildWhatsAppLink, formatWorkingDaysSummary } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ interface DoctorCardProps {
 
 export default function DoctorCard({ doctor }: DoctorCardProps) {
   const whatsappLink = doctor.whatsapp ? buildWhatsAppLink(doctor.whatsapp) : null;
+  const workingHoursSummary = formatWorkingDaysSummary(doctor.working_hours);
 
   // Names are stored without titles — just take the first character
   const getInitials = (name: string) => name.trim().charAt(0) || "ط";
@@ -94,6 +95,16 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
               {doctor.phone}
             </a>
           </div>
+
+          {/* Working Hours */}
+          {workingHoursSummary && (
+            <div className="flex items-center gap-1 text-[11px] sm:text-xs text-gray-700 mt-1">
+              <Clock className="w-3.5 h-3.5 text-pink-600 shrink-0" />
+              <span className="truncate">
+                {workingHoursSummary}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 

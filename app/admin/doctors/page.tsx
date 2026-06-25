@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Doctor, Governorate, City, SPECIALTIES } from "@/lib/types";
+import { stripDoctorTitle } from "@/lib/utils";
 
 export default function AdminDoctorsPage() {
   const [search, setSearch] = useState("");
@@ -221,7 +222,7 @@ export default function AdminDoctorsPage() {
     const hoursPayload = Object.keys(activeWorkingHours).length > 0 ? activeWorkingHours : null;
 
     const payload: any = {
-      name: editForm.name,
+      name: stripDoctorTitle(editForm.name),
       phone: editForm.phone,
       whatsapp: editForm.whatsapp || null,
       email: editForm.email || null,
@@ -342,7 +343,7 @@ export default function AdminDoctorsPage() {
                 filtered.map((doctor) => (
                   <tr key={doctor.id} className="hover:bg-gray-50 transition-colors">
                     <td className="p-4">
-                      <div className="font-medium text-gray-900">{doctor.name}</div>
+                      <div className="font-medium text-gray-900">د. {doctor.name}</div>
                       <div className="text-xs text-gray-400">{doctor.email}</div>
                     </td>
                     <td className="p-4 text-gray-600">{doctor.specialty}</td>
@@ -409,7 +410,7 @@ export default function AdminDoctorsPage() {
                   {editingDoctor.id === 0 ? "إضافة طبيبة جديدة" : "تعديل بيانات الطبيبة"}
                 </h2>
                 <p className="text-xs text-gray-500 mt-1">
-                  {editingDoctor.id === 0 ? "إدخال بيانات طبيبة جديدة في الدليل" : `تحديث ملف الطبيبة: ${editingDoctor.name}`}
+                  {editingDoctor.id === 0 ? "إدخال بيانات طبيبة جديدة في الدليل" : `تحديث ملف الطبيبة: د. ${editingDoctor.name}`}
                 </p>
               </div>
               <button

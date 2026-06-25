@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { SPECIALTIES, Governorate, City } from "@/lib/types";
+import { stripDoctorTitle } from "@/lib/utils";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
@@ -101,10 +102,8 @@ export default function RegisterPage() {
       return;
     }
 
-    // Validate quadruple name (ignore doctor prefixes)
-    const cleanName = formData.doctor_name
-      .replace(/^(الاستاذة\s+الدكتورة|الأستاذة\s+الدكتورة|أستاذة\s+دكتورة|دكتورة|دكتور|أ\.د\.|أ\.د|د\.\s*|د\/\s*)/i, "")
-      .trim();
+    // Strip any title prefix before validating the name
+    const cleanName = stripDoctorTitle(formData.doctor_name);
     const nameParts = cleanName.split(/\s+/).filter(Boolean);
     if (nameParts.length < 4) {
       alert("يرجى إدخال الاسم رباعياً للتسجيل (مثال: فاطمة محمد أحمد علي)");
@@ -134,7 +133,7 @@ export default function RegisterPage() {
       }
 
       const payload = {
-        doctor_name: formData.doctor_name,
+        doctor_name: stripDoctorTitle(formData.doctor_name),
         phone: formData.phone,
         whatsapp: formData.whatsapp || null,
         email: formData.email || null,
@@ -254,16 +253,18 @@ export default function RegisterPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  الاسم الكامل (الاسم الرباعي) <span className="text-red-500">*</span>
+                  الاسم الرباعي <span className="text-red-500">*</span>
                 </label>
                 <Input
                   id="doctor_name"
-                  placeholder="مثال: فاطمة محمد احمد علي"
+                  placeholder="مثال: فاطمة محمد أحمد علي"
                   value={formData.doctor_name}
                   onChange={(e) => handleChange("doctor_name", e.target.value)}
                   required
                 />
-                <p className="text-xs text-gray-400 mt-1">يجب إدخال الاسم رباعياً للتسجيل. سيتم عرض الاسم ثلاثياً فقط للعامة.</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  لا تكتبي &quot;د.&quot; أو &quot;دكتورة&quot;، سيتم إضافتها تلقائيًا عند عرض الاسم.
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">

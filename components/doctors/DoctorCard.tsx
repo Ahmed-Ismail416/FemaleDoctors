@@ -14,11 +14,8 @@ interface DoctorCardProps {
 export default function DoctorCard({ doctor }: DoctorCardProps) {
   const whatsappLink = doctor.whatsapp ? buildWhatsAppLink(doctor.whatsapp) : null;
 
-  // Extract initials helper that removes Arabic doctor prefixes
-  const getInitials = (name: string) => {
-    const cleanName = name.replace(/^(أ\.?\s*د\.?|د\.?|أ\.د\/|د\/)\s+/, "");
-    return cleanName.trim().charAt(0) || "ط";
-  };
+  // Names are stored without titles — just take the first character
+  const getInitials = (name: string) => name.trim().charAt(0) || "ط";
 
   return (
     <Card className="group overflow-hidden bg-white border border-purple-100 shadow-[0_2px_8px_-3px_rgba(168,85,247,0.1),_0_10px_20px_-15px_rgba(236,72,153,0.15)] hover:shadow-[0_8px_30px_rgba(168,85,247,0.12)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between">
@@ -29,7 +26,7 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
           {doctor.image_url ? (
             <Image
               src={doctor.image_url}
-              alt={doctor.name}
+              alt={`د. ${doctor.name}`}
               fill
               sizes="(max-width: 640px) 56px, 64px"
               loading="lazy"
@@ -47,7 +44,7 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
           {/* Name and Verification Badge */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <h3 className="text-sm sm:text-base font-bold text-gray-800 leading-tight group-hover:text-purple-700 transition-colors">
-              {doctor.name}
+              د. {doctor.name}
             </h3>
             {doctor.verified && (
               <Badge variant="success" className="text-[10px] px-1.5 py-0 rounded-full bg-green-50 text-green-700 border-green-200 hover:bg-green-50 shrink-0">

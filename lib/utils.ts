@@ -6,6 +6,47 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // =============================================
+// Doctor Name Standardization
+// =============================================
+
+/**
+ * Removes any Arabic doctor title prefix from a name and normalises whitespace.
+ *
+ * Titles stripped (case-insensitive, with optional trailing punctuation/spaces):
+ *   الأستاذة الدكتورة / الاستاذة الدكتورة / أستاذة دكتورة
+ *   أ.د. / أ.د
+ *   الدكتورة / الدكتور
+ *   دكتورة / دكتور
+ *   د. / د/
+ *   د (standalone, followed by space)
+ *
+ * The original database value is NEVER changed by the display layer.
+ * This function is used ONLY when saving new data (server-side).
+ *
+ * Examples:
+ *   "د. فاطمة محمد أحمد"      → "فاطمة محمد أحمد"
+ *   "دكتورة   آية   مصطفى"   → "آية مصطفى"
+ *   "الدكتورة سارة محمود"      → "سارة محمود"
+ *   "فاطمة محمد"               → "فاطمة محمد"  (unchanged)
+ */
+export function stripDoctorTitle(name: string): string {
+  if (!name) return "";
+
+  return name
+    // Remove compound titles first (most specific → least specific)
+    .replace(/^(الأستاذة\s+الدكتورة|الاستاذة\s+الدكتورة|أستاذة\s+دكتورة)\s*/i, "")
+    .replace(/^أ\.?\s*د\.?\s*/i, "")
+    .replace(/^(الدكتورة|الدكتور)\s*/i, "")
+    .replace(/^(دكتورة|دكتور)\s*/i, "")
+    .replace(/^د[./]\s*/i, "")
+    .replace(/^د\s+/i, "")           // "د " followed by space (without dot)
+    // Collapse multiple spaces into one and trim
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+
+// =============================================
 // Arabic Search Normalization
 // =============================================
 

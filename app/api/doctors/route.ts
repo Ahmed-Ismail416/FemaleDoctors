@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getDoctors } from "@/lib/repositories/doctors";
+import { stripDoctorTitle } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
 
   const doctor = await prisma.doctor.create({
     data: {
-      name: body.name,
+      name: stripDoctorTitle(body.name),
       phone: body.phone,
       whatsapp: body.whatsapp || null,
       email: body.email || null,

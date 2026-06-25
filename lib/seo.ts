@@ -70,7 +70,8 @@ export function canonical(path: string): string {
 
 /** Build doctor metadata title */
 export function doctorTitle(name: string, specialty: string, governorate: string): string {
-  return `${name} | طبيبة ${specialty} في ${governorate}`;
+  const cleanName = name.startsWith("د.") ? name : `د. ${name}`;
+  return `${cleanName} | طبيبة ${specialty} في ${governorate}`;
 }
 
 /** Build doctor metadata description */
@@ -81,9 +82,10 @@ export function doctorDescription(
   city?: string | null,
   address?: string,
 ): string {
+  const cleanName = name.startsWith("د.") ? name : `د. ${name}`;
   const location = city ? `${governorate} - ${city}` : governorate;
   return (
-    `تعرفي على ${name}، طبيبة ${specialty} في ${location}. ` +
+    `تعرفي على ${cleanName}، طبيبة ${specialty} في ${location}. ` +
     `احصلي على معلومات التواصل وعنوان العيادة${address ? ` (${address})` : ""}. ` +
     `دليل طبيبات مصر — أكبر دليل لطبيبات مصر الموثوقات.`
   );

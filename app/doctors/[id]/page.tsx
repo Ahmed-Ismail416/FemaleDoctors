@@ -166,7 +166,7 @@ export default async function DoctorProfilePage({ params }: Props) {
               <Link href="/doctors" className="hover:text-purple-600 transition-colors">الطبيبات</Link>
               <span>/</span>
               <span className="text-gray-900 font-medium truncate max-w-[150px] sm:max-w-none">
-                {doctor.name}
+                د. {doctor.name}
               </span>
             </nav>
           </div>
@@ -186,7 +186,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   {doctor.image_url ? (
                     <Image
                       src={doctor.image_url}
-                      alt={`${doctor.name} - طبيبة ${doctor.specialty} في ${govName}`}
+                      alt={`د. ${doctor.name} - طبيبة ${doctor.specialty} في ${govName}`}
                       fill
                       sizes="80px"
                       loading="eager"
@@ -202,7 +202,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                    <h1 className="text-base font-bold text-gray-900 leading-tight">{doctor.name}</h1>
+                    <h1 className="text-base font-bold text-gray-900 leading-tight">د. {doctor.name}</h1>
                     {doctor.verified && (
                       <Badge variant="success" className="text-[10px] px-1.5 py-0 rounded-full bg-green-50 text-green-700 border-green-200 shrink-0">
                         <CheckCircle2 className="w-2.5 h-2.5 mr-0.5" /> موثقة
@@ -217,7 +217,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                       href={doctor.map_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`موقع عيادة ${doctor.name} على خرائط جوجل`}
+                      aria-label={`موقع عيادة د. ${doctor.name} على خرائط جوجل`}
                       className="flex items-center gap-1 text-[11px] text-gray-500 hover:text-purple-600 transition-colors mb-1"
                     >
                       <MapPin className="w-3 h-3 text-purple-400 shrink-0" />
@@ -241,7 +241,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   {/* Phone */}
                   <a
                     href={`tel:${doctor.phone}`}
-                    aria-label={`اتصل بـ ${doctor.name}`}
+                    aria-label={`اتصل بـ د. ${doctor.name}`}
                     className="flex items-center gap-1 text-[11px] text-gray-500 hover:text-green-600 transition-colors"
                   >
                     <Phone className="w-3 h-3 text-green-400 shrink-0" />
@@ -256,12 +256,12 @@ export default async function DoctorProfilePage({ params }: Props) {
                   <>
                     <Button variant="whatsapp" className="flex-1 h-11 text-sm font-bold rounded-xl" asChild>
                       <a href={whatsappLink} target="_blank" rel="noopener noreferrer"
-                         aria-label={`تواصل مع ${doctor.name} عبر واتساب`}>
+                         aria-label={`تواصل مع د. ${doctor.name} عبر واتساب`}>
                         <MessageCircle className="w-4 h-4 shrink-0" />واتساب
                       </a>
                     </Button>
                     <Button variant="default" className="flex-1 h-11 text-sm font-bold rounded-xl" asChild>
-                      <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ ${doctor.name}`}>
+                      <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ د. ${doctor.name}`}>
                         <Phone className="w-4 h-4 shrink-0" />اتصال
                       </a>
                     </Button>
@@ -301,7 +301,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   {doctor.image_url ? (
                     <Image
                       src={doctor.image_url}
-                      alt={`${doctor.name} - طبيبة ${doctor.specialty} في ${govName}`}
+                      alt={`د. ${doctor.name} - طبيبة ${doctor.specialty} في ${govName}`}
                       fill
                       sizes="(max-width: 1024px) 100vw, 33vw"
                       loading="eager"
@@ -323,7 +323,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   )}
                 </div>
                 <div className="p-5">
-                  <h1 className="text-xl font-bold text-gray-900 mb-1">{doctor.name}</h1>
+                  <h1 className="text-xl font-bold text-gray-900 mb-1">د. {doctor.name}</h1>
                   <p className="text-purple-600 font-medium text-sm mb-4">{doctor.specialty}</p>
                   <div className="space-y-3">
                     <div className="flex items-start gap-2 text-sm text-gray-600">
@@ -344,14 +344,14 @@ export default async function DoctorProfilePage({ params }: Props) {
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-pink-100 space-y-3">
                 <h2 className="font-bold text-gray-900 mb-4">التواصل مع الطبيبة</h2>
                 <Button variant="default" size="lg" className="w-full" asChild>
-                  <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ ${doctor.name}`}>
+                  <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ د. ${doctor.name}`}>
                     <Phone className="w-5 h-5" />{doctor.phone}
                   </a>
                 </Button>
                 {whatsappLink && (
                   <Button variant="whatsapp" size="lg" className="w-full" asChild>
                     <a href={whatsappLink} target="_blank" rel="noopener noreferrer"
-                       aria-label={`واتساب ${doctor.name}`}>
+                       aria-label={`واتساب د. ${doctor.name}`}>
                       <MessageCircle className="w-5 h-5" />تواصل عبر واتساب
                     </a>
                   </Button>
@@ -398,7 +398,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                 <h2 className="text-lg font-bold text-gray-900 mb-4">معلومات العيادة</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
-                    { label: "الاسم", value: doctor.name },
+                    { label: "الاسم", value: `د. ${doctor.name}` },
                     { label: "التخصص", value: doctor.specialty },
                     { label: "المحافظة", value: govName },
                     { label: "المنطقة", value: doctor.city?.name_ar || "-" },

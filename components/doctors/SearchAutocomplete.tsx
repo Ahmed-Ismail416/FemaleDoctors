@@ -327,6 +327,7 @@ export default function SearchAutocomplete({
                 <div className="flex-1 min-w-0">
                   {/* Name with highlight */}
                   <p className="text-sm font-semibold text-gray-900 leading-snug">
+                    <span>د. </span>
                     {segments.map((seg, i) =>
                       seg.highlight ? (
                         <mark

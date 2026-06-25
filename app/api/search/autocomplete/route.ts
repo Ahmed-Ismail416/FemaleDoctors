@@ -4,7 +4,7 @@
  * Returns up to 5 doctor suggestions for the given Arabic search query.
  *
  * Rules:
- *  - Minimum 3 characters (Arabic 2-char queries return too many irrelevant results)
+ *  - Minimum 2 characters
  *  - Maximum 50 characters
  *  - Results ordered by: exact/prefix first, then trigram similarity
  *  - Response cached: s-maxage=300, stale-while-revalidate=600
@@ -21,7 +21,7 @@ import { prisma } from "@/lib/prisma";
 import { normalizeArabic } from "@/lib/utils";
 
 const MAX_RESULTS = 5;
-const MIN_CHARS = 3;
+const MIN_CHARS = 2;
 const MAX_CHARS = 50;
 const SIMILARITY_THRESHOLD = 0.4;
 

@@ -7,7 +7,7 @@
  *
  * Behaviour:
  *  - Debounce: 300 ms
- *  - Min 3 chars before hitting the autocomplete API
+ *  - Min 2 chars before hitting the autocomplete API
  *  - Shows up to 5 suggestions in a floating dropdown
  *  - Highlights the matched substring (graceful fallback if Arabic normalization
  *    makes an exact position mapping impossible)
@@ -139,7 +139,7 @@ export default function SearchAutocomplete({
   // ── Fetch suggestions ──────────────────────────────────────────────────────
 
   const fetchSuggestions = useCallback(async (q: string) => {
-    if (q.length < 3) {
+    if (q.length < 2) {
       setSuggestions([]);
       setIsOpen(false);
       return;

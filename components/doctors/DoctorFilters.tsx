@@ -104,7 +104,7 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
           <div className="relative flex-grow">
             <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             <Input
-              placeholder="ابحثي باسم الطبيبة (مثال: فاطمة محمد)..."
+              placeholder="ابحثي باسم الطبيبة"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearchApply()}
@@ -144,12 +144,12 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
           {/* Governorate Dropdown */}
-          <div className="space-y-0.5 sm:space-y-1.5">
+          <div className="col-span-1 space-y-0.5 sm:space-y-1.5">
             <label className="hidden sm:block text-[11px] font-semibold text-gray-500 mr-1">المحافظة</label>
             <Select value={governorate || "all"} onValueChange={handleGovernorateChange}>
-              <SelectTrigger id="governorate-filter" className="h-9 sm:h-10 rounded-xl border-purple-100 bg-gray-50/20 text-[10px] sm:text-xs text-gray-700 px-2 sm:px-3" disabled={isPending}>
+              <SelectTrigger id="governorate-filter" className="h-10 rounded-xl border-purple-100 bg-gray-50/20 text-xs sm:text-sm text-gray-700 px-2 sm:px-3" disabled={isPending}>
                 <SelectValue placeholder="كل المحافظات" />
               </SelectTrigger>
               <SelectContent>
@@ -163,29 +163,11 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
             </Select>
           </div>
 
-          {/* City Dropdown */}
-          <div className="space-y-0.5 sm:space-y-1.5">
-            <label className="hidden sm:block text-[11px] font-semibold text-gray-500 mr-1">المنطقة / الحي</label>
-            <Select value={city || "all"} onValueChange={handleCityChange} disabled={!governorate || isPending}>
-              <SelectTrigger id="city-filter" className="h-9 sm:h-10 rounded-xl border-purple-100 bg-gray-50/20 text-[10px] sm:text-xs text-gray-700 px-2 sm:px-3">
-                <SelectValue placeholder="كل المناطق" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">كل المناطق</SelectItem>
-                {filteredCities.map((c) => (
-                  <SelectItem key={c.id} value={String(c.id)}>
-                    {c.name_ar}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Specialty Dropdown */}
-          <div className="space-y-0.5 sm:space-y-1.5">
+          <div className="col-span-1 space-y-0.5 sm:space-y-1.5">
             <label className="hidden sm:block text-[11px] font-semibold text-gray-500 mr-1">التخصص الطبي</label>
             <Select value={specialty || "all"} onValueChange={handleSpecialtyChange} disabled={isPending}>
-              <SelectTrigger id="specialty-filter" className="h-9 sm:h-10 rounded-xl border-purple-100 bg-gray-50/20 text-[10px] sm:text-xs text-gray-700 px-2 sm:px-3">
+              <SelectTrigger id="specialty-filter" className="h-10 rounded-xl border-purple-100 bg-gray-50/20 text-xs sm:text-sm text-gray-700 px-2 sm:px-3">
                 <SelectValue placeholder="كل التخصصات" />
               </SelectTrigger>
               <SelectContent>
@@ -193,6 +175,24 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
                 {SPECIALTIES.map((s) => (
                   <SelectItem key={s} value={s}>
                     {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* City Dropdown */}
+          <div className="col-span-2 lg:col-span-1 space-y-0.5 sm:space-y-1.5">
+            <label className="hidden sm:block text-[11px] font-semibold text-gray-500 mr-1">المنطقة / الحي</label>
+            <Select value={city || "all"} onValueChange={handleCityChange} disabled={!governorate || isPending}>
+              <SelectTrigger id="city-filter" className="h-10 rounded-xl border-purple-100 bg-gray-50/20 text-xs sm:text-sm text-gray-700 px-2 sm:px-3">
+                <SelectValue placeholder="كل المناطق" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">كل المناطق</SelectItem>
+                {filteredCities.map((c) => (
+                  <SelectItem key={c.id} value={String(c.id)}>
+                    {c.name_ar}
                   </SelectItem>
                 ))}
               </SelectContent>

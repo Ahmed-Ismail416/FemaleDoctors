@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Users, ChevronRight, ChevronLeft } from "lucide-react";
 import DoctorCard from "@/components/doctors/DoctorCard";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { getDoctors } from "@/lib/repositories/doctors";
 import { SITE_NAME, OG_IMAGE, BASE_KEYWORDS, canonical } from "@/lib/seo";
 
 const DoctorFiltersAsync = dynamic(
@@ -61,20 +61,7 @@ export default async function DoctorsPage({
 }) {
   const params = await searchParams;
 
-  const where: Prisma.DoctorWhereInput = { verified: true };
-
-  if (params.search) {
-    where.OR = [
-      { name: { contains: params.search, mode: "insensitive" } },
-      { specialty: { contains: params.search, mode: "insensitive" } },
-      { address: { contains: params.search, mode: "insensitive" } },
-    ];
-  }
-  // Default to governorate 17 (Al-Fayoum) if no parameter is provided
   const selectedGov = params.governorate === undefined ? "17" : params.governorate;
-  if (selectedGov) where.governorate_id = parseInt(selectedGov);
-  if (params.city) where.city_id = parseInt(params.city);
-  if (params.specialty) where.specialty = params.specialty;
 
   // Pagination calculations
   const currentPage = (() => {
@@ -82,25 +69,23 @@ export default async function DoctorsPage({
     return isNaN(parsed) || parsed < 1 ? 1 : parsed;
   })();
   const PAGE_SIZE = 12;
-  const skip = (currentPage - 1) * PAGE_SIZE;
 
-  const [governorates, cities, filtered, totalCount] = await Promise.all([
+  const [governorates, cities, doctorResult] = await Promise.all([
     prisma.governorate.findMany({ orderBy: { name_ar: "asc" } }),
     prisma.city.findMany({ orderBy: { name_ar: "asc" } }),
-    prisma.doctor.findMany({
-      where,
-      include: {
-        governorate: { select: { id: true, name_ar: true, name_en: true, slug: true } },
-        city: { select: { id: true, name_ar: true, name_en: true, slug: true } },
-      },
-      orderBy: { created_at: "desc" },
-      take: PAGE_SIZE,
-      skip,
+    getDoctors({
+      search: params.search || undefined,
+      governorate: selectedGov ? parseInt(selectedGov) : undefined,
+      city: params.city ? parseInt(params.city) : undefined,
+      specialty: params.specialty || undefined,
+      page: currentPage,
+      pageSize: PAGE_SIZE,
     }),
-    prisma.doctor.count({ where }),
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const filtered = doctorResult.data;
+  const totalCount = doctorResult.count;
+  const totalPages = doctorResult.totalPages;
   const hasFilters =
     params.search || (params.governorate !== undefined && params.governorate !== "17") || params.city || params.specialty;
 

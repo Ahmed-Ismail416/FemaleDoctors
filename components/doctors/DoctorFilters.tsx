@@ -2,9 +2,9 @@
 
 import { useState, useTransition, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, Filter, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SearchAutocomplete from "@/components/doctors/SearchAutocomplete";
 import {
   Select,
   SelectContent,
@@ -100,36 +100,12 @@ export default function DoctorFilters({ governorates, cities }: DoctorFiltersPro
     <div className="space-y-4">
       {/* Name Search Box */}
       <div className="bg-white rounded-2xl shadow-sm border border-pink-100 p-5">
-        <div className="flex gap-2 sm:gap-3">
-          <div className="relative flex-grow">
-            <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-            <Input
-              placeholder="ابحثي باسم الطبيبة"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearchApply()}
-              className="pr-10 h-12 rounded-xl text-sm border-purple-100 focus-visible:ring-purple-400 bg-gray-50/10"
-              id="search-input"
-            />
-          </div>
-          <Button
-            variant="pink"
-            onClick={handleSearchApply}
-            disabled={isPending}
-            className="h-12 px-5 sm:px-8 font-bold rounded-xl shadow-sm hover:shadow transition-all shrink-0"
-            id="apply-filters-btn"
-          >
-            <Search className="w-4 h-4" />
-            {isPending ? (
-              <span>جاري...</span>
-            ) : (
-              <>
-                <span className="hidden sm:inline">بحث بالاسم</span>
-                <span className="inline sm:hidden">بحث</span>
-              </>
-            )}
-          </Button>
-        </div>
+        <SearchAutocomplete
+          value={search}
+          onChange={setSearch}
+          onApply={handleSearchApply}
+          isPending={isPending}
+        />
       </div>
 
       {/* Advanced Filters */}

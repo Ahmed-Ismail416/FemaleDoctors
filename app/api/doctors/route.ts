@@ -1,51 +1,27 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { getDoctors } from "@/lib/repositories/doctors";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
-  const search = searchParams.get("search");
+  const search = searchParams.get("search") || undefined;
   const governorate = searchParams.get("governorate");
   const city = searchParams.get("city");
-  const specialty = searchParams.get("specialty");
+  const specialty = searchParams.get("specialty") || undefined;
   const page = parseInt(searchParams.get("page") || "1");
   const pageSize = parseInt(searchParams.get("pageSize") || "12");
 
-  const where: Prisma.DoctorWhereInput = { verified: true };
-
-  if (search) {
-    where.OR = [
-      { name: { contains: search, mode: "insensitive" } },
-      { specialty: { contains: search, mode: "insensitive" } },
-      { address: { contains: search, mode: "insensitive" } },
-    ];
-  }
-  if (governorate) where.governorate_id = parseInt(governorate);
-  if (city) where.city_id = parseInt(city);
-  if (specialty) where.specialty = specialty;
-
-  const [data, count] = await Promise.all([
-    prisma.doctor.findMany({
-      where,
-      include: {
-        governorate: { select: { id: true, name_ar: true, name_en: true, slug: true } },
-        city: { select: { id: true, name_ar: true, name_en: true, slug: true } },
-      },
-      orderBy: { created_at: "desc" },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    }),
-    prisma.doctor.count({ where }),
-  ]);
-
-  return NextResponse.json({
-    data,
-    count,
+  const result = await getDoctors({
+    search,
+    governorate: governorate ? parseInt(governorate) : undefined,
+    city: city ? parseInt(city) : undefined,
+    specialty,
     page,
     pageSize,
-    totalPages: Math.ceil(count / pageSize),
   });
+
+  return NextResponse.json(result);
 }
 
 export async function POST(request: Request) {

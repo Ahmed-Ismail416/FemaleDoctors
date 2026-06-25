@@ -258,7 +258,7 @@ export default function RegisterPage() {
                 </label>
                 <Input
                   id="doctor_name"
-                  placeholder="مثال: د. فاطمة محمد أحمد علي"
+                  placeholder="مثال: فاطمة محمد احمد علي"
                   value={formData.doctor_name}
                   onChange={(e) => handleChange("doctor_name", e.target.value)}
                   required

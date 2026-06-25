@@ -5,6 +5,47 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// =============================================
+// Arabic Search Normalization
+// =============================================
+
+/**
+ * Normalizes an Arabic string for search comparison.
+ * Mirrors the logic of the PostgreSQL `normalize_arabic()` function.
+ *
+ * Rules applied:
+ *  - أ / إ / آ  →  ا
+ *  - ؤ          →  و
+ *  - ئ / ى      →  ي
+ *  - ة          →  ه
+ *  - Remove tatweel ـ
+ *  - Remove all diacritics (tashkeel: fatha, damma, kasra, tanween, shadda, sukun)
+ *  - Collapse multiple whitespace → single space
+ *  - Trim leading / trailing whitespace
+ *
+ * The original database value is NEVER changed — this is used only on the
+ * search query text before passing it to PostgreSQL.
+ */
+export function normalizeArabic(text: string): string {
+  if (!text) return "";
+
+  return text
+    // Step 1: lowercase (no effect on Arabic, but handles any Latin mix)
+    .toLowerCase()
+    // Step 2: map letter variants
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ؤ/g, "و")
+    .replace(/[ئى]/g, "ي")
+    .replace(/ة/g, "ه")
+    // Step 3: remove tatweel
+    .replace(/ـ/g, "")
+    // Step 4: remove diacritics (tashkeel U+064B – U+0652)
+    .replace(/[\u064B-\u0652]/g, "")
+    // Step 5: collapse whitespace & trim
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function formatPhone(phone: string): string {
   return phone.replace(/(\d{4})(\d{3})(\d{4})/, "$1 $2 $3");
 }

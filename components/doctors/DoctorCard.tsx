@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Phone, MapPin, MessageCircle, Map, ChevronLeft, Clock } from "lucide-react";
+import { Phone, MapPin, MessageCircle, Map, ChevronLeft } from "lucide-react";
 import { Doctor } from "@/lib/types";
-import { buildWhatsAppLink, getTripleName, formatWorkingDaysSummary } from "@/lib/utils";
+import { buildWhatsAppLink } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,8 +19,6 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
     const cleanName = name.replace(/^(أ\.?\s*د\.?|د\.?|أ\.د\/|د\/)\s+/, "");
     return cleanName.trim().charAt(0) || "ط";
   };
-
-  const workingHoursSummary = formatWorkingDaysSummary(doctor.working_hours);
 
   return (
     <Card className="group overflow-hidden bg-white border border-purple-100 shadow-[0_2px_8px_-3px_rgba(168,85,247,0.1),_0_10px_20px_-15px_rgba(236,72,153,0.15)] hover:shadow-[0_8px_30px_rgba(168,85,247,0.12)] hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between">
@@ -49,7 +47,7 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
           {/* Name and Verification Badge */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <h3 className="text-sm sm:text-base font-bold text-gray-800 leading-tight group-hover:text-purple-700 transition-colors">
-              {getTripleName(doctor.name)}
+              {doctor.name}
             </h3>
             {doctor.verified && (
               <Badge variant="success" className="text-[10px] px-1.5 py-0 rounded-full bg-green-50 text-green-700 border-green-200 hover:bg-green-50 shrink-0">
@@ -99,16 +97,6 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
               {doctor.phone}
             </a>
           </div>
-
-          {/* Working Hours */}
-          {workingHoursSummary && (
-            <div className="flex items-center gap-1 text-[11px] sm:text-xs text-gray-500 mt-1">
-              <Clock className="w-3.5 h-3.5 text-pink-400 shrink-0" />
-              <span className="truncate">
-                {workingHoursSummary}
-              </span>
-            </div>
-          )}
         </div>
       </div>
 

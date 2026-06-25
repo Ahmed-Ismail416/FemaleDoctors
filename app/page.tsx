@@ -154,17 +154,15 @@ export default async function HomePage() {
       />
 
       {/* Featured Doctors */}
-      <section className="py-16 bg-secondary">
+       <section className="py-16 bg-[#F8FAFC]">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-10">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Users className="w-5 h-5 text-purple-600" />
-                <span className="text-purple-600 font-semibold text-sm">طبيبات الدليل</span>
-              </div>
+                <Users className="w-5 h-5 text-purple-800" />
+                <span className="text-purple-800 font-bold text-sm">طبيبات الدليل</span></div>
               <h2 className="text-3xl font-bold text-gray-900">طبيبات مصر</h2>
-              <p className="text-gray-500 mt-1">أحدث الطبيبات في مختلف التخصصات الطبية في مصر</p>
-            </div>
+<p className="text-gray-700 font-medium mt-1">أحدث الطبيبات في مختلف التخصصات الطبية في مصر</p>            </div>
             <Button variant="outline" asChild className="hidden sm:flex">
               <Link href="/doctors">
                 <ArrowLeft className="w-4 h-4" />

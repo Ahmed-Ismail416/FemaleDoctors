@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { buildWhatsAppLink, getTripleName } from "@/lib/utils";
+import { buildWhatsAppLink } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 import {
   SITE_URL, SITE_NAME, OG_IMAGE,
@@ -32,10 +32,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const govName = doctor.governorate?.name_ar ?? "مصر";
   const cityName = doctor.city?.name_ar ?? null;
   const pageUrl = canonical(`/doctors/${id}`);
-  const tripleName = getTripleName(doctor.name);
-  const title = doctorTitle(tripleName, doctor.specialty, govName);
+  const title = doctorTitle(doctor.name, doctor.specialty, govName);
   const description = doctorDescription(
-    tripleName, doctor.specialty, govName, cityName, doctor.address,
+    doctor.name, doctor.specialty, govName, cityName, doctor.address,
   );
 
   return {
@@ -51,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: "ar_EG",
       siteName: SITE_NAME,
       images: doctor.image_url
-        ? [{ url: doctor.image_url, alt: tripleName }]
+        ? [{ url: doctor.image_url, alt: doctor.name }]
         : [OG_IMAGE],
     },
     twitter: {
@@ -79,7 +78,6 @@ export default async function DoctorProfilePage({ params }: Props) {
   const whatsappLink = doctor.whatsapp ? buildWhatsAppLink(doctor.whatsapp) : null;
   const govName = doctor.governorate?.name_ar ?? "مصر";
   const pageUrl = canonical(`/doctors/${id}`);
-  const tripleName = getTripleName(doctor.name);
 
   // Extract clean initials (strips Arabic doctor prefixes)
   const getInitials = (name: string) => {
@@ -92,7 +90,7 @@ export default async function DoctorProfilePage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": ["Physician", "MedicalBusiness"],
     "@id": `${pageUrl}#physician`,
-    name: tripleName,
+    name: doctor.name,
     medicalSpecialty: doctor.specialty,
     description: doctor.bio ?? undefined,
     url: pageUrl,
@@ -100,7 +98,7 @@ export default async function DoctorProfilePage({ params }: Props) {
     ...(doctor.whatsapp && { faxNumber: doctor.whatsapp }),
     ...(doctor.email && { email: doctor.email }),
     ...(doctor.image_url && {
-      image: { "@type": "ImageObject", url: doctor.image_url, name: tripleName },
+      image: { "@type": "ImageObject", url: doctor.image_url, name: doctor.name },
     }),
     address: {
       "@type": "PostalAddress",
@@ -141,7 +139,7 @@ export default async function DoctorProfilePage({ params }: Props) {
       {
         "@type": "ListItem",
         position: 3,
-        name: tripleName,
+        name: doctor.name,
         item: pageUrl,
       },
     ],
@@ -168,7 +166,7 @@ export default async function DoctorProfilePage({ params }: Props) {
               <Link href="/doctors" className="hover:text-purple-600 transition-colors">الطبيبات</Link>
               <span>/</span>
               <span className="text-gray-900 font-medium truncate max-w-[150px] sm:max-w-none">
-                {tripleName}
+                {doctor.name}
               </span>
             </nav>
           </div>
@@ -188,15 +186,15 @@ export default async function DoctorProfilePage({ params }: Props) {
                   {doctor.image_url ? (
                     <Image
                       src={doctor.image_url}
-                      alt={`${tripleName} - طبيبة ${doctor.specialty} في ${govName}`}
+                      alt={`${doctor.name} - طبيبة ${doctor.specialty} في ${govName}`}
                       fill
                       sizes="80px"
                       loading="eager"
                       className="object-cover object-top"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-200 to-pink-200 text-purple-700 font-bold text-2xl">
-                      {getInitials(tripleName)}
+                    <div className="w-full h-full flex items-center justify-center bg-purple-100 text-purple-700 font-bold text-2xl">
+                      {getInitials(doctor.name)}
                     </div>
                   )}
                 </div>
@@ -204,7 +202,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                    <h1 className="text-base font-bold text-gray-900 leading-tight">{tripleName}</h1>
+                    <h1 className="text-base font-bold text-gray-900 leading-tight">{doctor.name}</h1>
                     {doctor.verified && (
                       <Badge variant="success" className="text-[10px] px-1.5 py-0 rounded-full bg-green-50 text-green-700 border-green-200 shrink-0">
                         <CheckCircle2 className="w-2.5 h-2.5 mr-0.5" /> موثقة
@@ -219,10 +217,10 @@ export default async function DoctorProfilePage({ params }: Props) {
                       href={doctor.map_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`موقع عيادة ${tripleName} على خرائط جوجل`}
+                      aria-label={`موقع عيادة ${doctor.name} على خرائط جوجل`}
                       className="flex items-center gap-1 text-[11px] text-gray-500 hover:text-purple-600 transition-colors mb-1"
                     >
-                      <MapPin className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                      <MapPin className="w-3 h-3 text-purple-400 shrink-0" />
                       <span className="truncate">
                         {govName}{doctor.city && ` - ${doctor.city.name_ar}`}
                       </span>
@@ -230,7 +228,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                     </a>
                   ) : (
                     <div className="flex items-center gap-1 text-[11px] text-gray-500 mb-1">
-                      <MapPin className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                      <MapPin className="w-3 h-3 text-purple-400 shrink-0" />
                       <span className="truncate">
                         {govName}{doctor.city && ` - ${doctor.city.name_ar}`}
                       </span>
@@ -243,7 +241,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   {/* Phone */}
                   <a
                     href={`tel:${doctor.phone}`}
-                    aria-label={`اتصل بـ ${tripleName}`}
+                    aria-label={`اتصل بـ ${doctor.name}`}
                     className="flex items-center gap-1 text-[11px] text-gray-500 hover:text-green-600 transition-colors"
                   >
                     <Phone className="w-3 h-3 text-green-400 shrink-0" />
@@ -258,12 +256,12 @@ export default async function DoctorProfilePage({ params }: Props) {
                   <>
                     <Button variant="whatsapp" className="flex-1 h-11 text-sm font-bold rounded-xl" asChild>
                       <a href={whatsappLink} target="_blank" rel="noopener noreferrer"
-                         aria-label={`تواصل مع ${tripleName} عبر واتساب`}>
+                         aria-label={`تواصل مع ${doctor.name} عبر واتساب`}>
                         <MessageCircle className="w-4 h-4 shrink-0" />واتساب
                       </a>
                     </Button>
                     <Button variant="default" className="flex-1 h-11 text-sm font-bold rounded-xl" asChild>
-                      <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ ${tripleName}`}>
+                      <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ ${doctor.name}`}>
                         <Phone className="w-4 h-4 shrink-0" />اتصال
                       </a>
                     </Button>
@@ -299,11 +297,11 @@ export default async function DoctorProfilePage({ params }: Props) {
             <div className="hidden lg:block lg:col-span-1 space-y-5">
               {/* Profile Card */}
               <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-pink-100">
-                <div className="relative h-56 bg-gradient-to-br from-pink-100 to-purple-100">
+                <div className="relative h-56 bg-purple-50">
                   {doctor.image_url ? (
                     <Image
                       src={doctor.image_url}
-                      alt={`${tripleName} - طبيبة ${doctor.specialty} في ${govName}`}
+                      alt={`${doctor.name} - طبيبة ${doctor.specialty} في ${govName}`}
                       fill
                       sizes="(max-width: 1024px) 100vw, 33vw"
                       loading="eager"
@@ -311,8 +309,8 @@ export default async function DoctorProfilePage({ params }: Props) {
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-28 h-28 rounded-full bg-gradient-to-br from-purple-300 to-pink-300 flex items-center justify-center text-white text-5xl font-bold shadow-lg">
-                        {getInitials(tripleName)}
+                      <div className="w-28 h-28 rounded-full bg-purple-200 flex items-center justify-center text-white text-5xl font-bold shadow-lg">
+                        {getInitials(doctor.name)}
                       </div>
                     </div>
                   )}
@@ -325,7 +323,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                   )}
                 </div>
                 <div className="p-5">
-                  <h1 className="text-xl font-bold text-gray-900 mb-1">{tripleName}</h1>
+                  <h1 className="text-xl font-bold text-gray-900 mb-1">{doctor.name}</h1>
                   <p className="text-purple-600 font-medium text-sm mb-4">{doctor.specialty}</p>
                   <div className="space-y-3">
                     <div className="flex items-start gap-2 text-sm text-gray-600">
@@ -346,7 +344,7 @@ export default async function DoctorProfilePage({ params }: Props) {
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-pink-100 space-y-3">
                 <h2 className="font-bold text-gray-900 mb-4">التواصل مع الطبيبة</h2>
                 <Button variant="default" size="lg" className="w-full" asChild>
-                  <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ ${tripleName}`}>
+                  <a href={`tel:${doctor.phone}`} aria-label={`اتصل بـ ${doctor.name}`}>
                     <Phone className="w-5 h-5" />{doctor.phone}
                   </a>
                 </Button>
@@ -398,9 +396,9 @@ export default async function DoctorProfilePage({ params }: Props) {
               {/* Clinic Details */}
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-pink-100">
                 <h2 className="text-lg font-bold text-gray-900 mb-4">معلومات العيادة</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
-                    { label: "الاسم", value: tripleName },
+                    { label: "الاسم", value: doctor.name },
                     { label: "التخصص", value: doctor.specialty },
                     { label: "المحافظة", value: govName },
                     { label: "المنطقة", value: doctor.city?.name_ar || "-" },
@@ -413,67 +411,6 @@ export default async function DoctorProfilePage({ params }: Props) {
                     </div>
                   ))}
                 </div>
-
-                {/* Daily Working Hours Table */}
-                {doctor.working_hours && (
-                  (() => {
-                    let hoursObj: any = doctor.working_hours;
-                    if (typeof hoursObj === "string") {
-                      try { hoursObj = JSON.parse(hoursObj); } catch { hoursObj = null; }
-                    }
-                    if (!hoursObj || typeof hoursObj !== "object") return null;
-
-                    const days = [
-                      { key: "saturday", label: "السبت" },
-                      { key: "sunday", label: "الأحد" },
-                      { key: "monday", label: "الإثنين" },
-                      { key: "tuesday", label: "الثلاثاء" },
-                      { key: "wednesday", label: "الأربعاء" },
-                      { key: "thursday", label: "الخميس" },
-                      { key: "friday", label: "الجمعة" },
-                    ];
-
-                    const activeDays = days.filter(d => {
-                      const item = hoursObj[d.key];
-                      return item && (item.active || (item.from && item.to));
-                    });
-
-                    if (activeDays.length === 0) return null;
-
-                    return (
-                      <div className="mt-5 border-t border-purple-100 pt-4">
-                        <h3 className="text-sm font-bold text-purple-700 mb-3 flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-pink-500" />
-                          أوقات العمل بالتفصيل:
-                        </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                          {days.map((day) => {
-                            const item = hoursObj[day.key];
-                            const isActive = item && (item.active || (item.from && item.to));
-                            return (
-                              <div 
-                                key={day.key} 
-                                className={`flex justify-between items-center px-3 py-2 rounded-xl text-xs ${
-                                  isActive 
-                                    ? "bg-pink-50/50 border border-pink-100 text-gray-800" 
-                                    : "bg-gray-50 text-gray-400 line-through decoration-gray-300"
-                                }`}
-                              >
-                                <span className="font-bold">{day.label}</span>
-                                <span>
-                                  {isActive 
-                                    ? `من ${item.from || ""} إلى ${item.to || ""}` 
-                                    : "مغلق"
-                                  }
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()
-                )}
               </div>
 
               {/* Map */}
